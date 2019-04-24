@@ -1,0 +1,38 @@
+PODS:
+  - AMap3DMap (6.8.0):
+    - AMapFoundation (~> 1.5)
+  - amap_view (0.0.1):
+    - AMapNavi
+    - Flutter
+  - AMapFoundation (1.5.6)
+  - AMapNavi (6.7.0):
+    - AMap3DMap (~> 6.7)
+    - AMapFoundation (~> 1.5)
+  - Flutter (1.0.0)
+
+DEPENDENCIES:
+  - amap_view (from `.symlinks/plugins/amap_view/ios`)
+  - Flutter (from `.symlinks/flutter/ios`)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - AMap3DMap
+    - AMapFoundation
+    - AMapNavi
+
+EXTERNAL SOURCES:
+  amap_view:
+    :path: ".symlinks/plugins/amap_view/ios"
+  Flutter:
+    :path: ".symlinks/flutter/ios"
+
+SPEC CHECKSUMS:
+  AMap3DMap: a18ab563e968c8adafd9cc395f1f5e5d147d2607
+  amap_view: e572ee6d2c5391660f90eb2e3674a58336321665
+  AMapFoundation: 20fce2a12cd152e1092afdd04379cdac21932185
+  AMapNavi: 89e30fee35c01a00e45e846fa272f60724d06d0c
+  Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
+
+PODFILE CHECKSUM: ebd43b443038e611b86ede96e613bd6033c49497
+
+COCOAPODS: 1.6.1

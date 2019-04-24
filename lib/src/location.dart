@@ -1,0 +1,103 @@
+part of amap_view;
+
+class AmapLocation {
+  static const MethodChannel _channel =
+  const MethodChannel('plugins.laoqiu.com/amap_view_location');
+
+  static Future<String> get platformVersion async {
+    final String version = await _channel.invokeMethod('getPlatformVersion');
+    return version;
+  }
+
+  static Future<void> start() async {
+    await _channel.invokeMethod('location#start');
+  }
+}
+
+class LatLng {
+  const LatLng(this.latitude, this.longitude)
+      : assert(latitude != null),
+        assert(longitude != null);
+
+  final double latitude;
+  final double longitude;
+
+  Map<String, dynamic> toMap() {
+    return {"latitude": latitude, "longitude": longitude};
+  }
+
+  static LatLng fromJson(dynamic json) {
+    if (json == null) {
+      return null;
+    }
+    return LatLng(json[0], json[1]);
+  }
+
+  @override
+  String toString() => '$runtimeType($latitude, $longitude)';
+
+  @override
+  bool operator ==(Object o) {
+    return o is LatLng && o.latitude == latitude && o.longitude == longitude;
+  }
+
+  @override
+  int get hashCode => hashValues(latitude, longitude);
+}
+
+class LatLngBounds {
+  const LatLngBounds(this.southwest, this.northeast)
+      : assert(southwest != null),
+        assert(northeast != null);
+
+  final LatLng southwest;
+  final LatLng northeast;
+
+  Map<String, dynamic> toMap() {
+    return {"southwest": northeast.toMap(), "northeast": northeast.toMap()};
+  }
+
+//  static LatLngBounds fromJson(dynamic json) {
+//    if (json == null) {
+//      return null;
+//    }
+//    return LatLngBounds();
+//  }
+
+  @override
+  String toString() => '$runtimeType($southwest, $northeast)';
+
+  @override
+  bool operator ==(Object o) {
+    return o is LatLngBounds && o.northeast == northeast && o.southwest == southwest;
+  }
+
+  @override
+  int get hashCode => hashValues(northeast, southwest);
+}
+
+
+class Poi {
+  Poi(this.name, this.target, this.s1) : assert(name != null), assert(target != null);
+
+  final String name;
+  final LatLng target;
+  final String s1;
+
+  Map<String, dynamic> toMap() {
+    final Map<String, dynamic> _data = <String, dynamic>{};
+    void addIfPresent(String fieldName, dynamic value) {
+      if (value != null) {
+        _data[fieldName] = value;
+      }
+    }
+
+    addIfPresent("name", name);
+    addIfPresent("target", target.toMap());
+    addIfPresent("s1", s1);
+
+    return _data;
+  }
+
+}
+

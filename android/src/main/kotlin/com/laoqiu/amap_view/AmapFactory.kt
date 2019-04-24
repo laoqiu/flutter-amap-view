@@ -1,0 +1,327 @@
+package com.laoqiu.amap_view
+
+import android.Manifest
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.Application
+import android.content.Context
+import android.location.Location
+import android.os.Bundle
+import android.util.Log
+import android.view.View
+import androidx.core.app.ActivityCompat
+import io.flutter.plugin.common.PluginRegistry.Registrar
+import io.flutter.plugin.common.StandardMessageCodec
+import io.flutter.plugin.platform.PlatformView
+import io.flutter.plugin.platform.PlatformViewFactory
+import java.util.concurrent.atomic.AtomicInteger
+import com.amap.api.maps.AMap
+import com.amap.api.maps.TextureMapView
+import com.amap.api.maps.model.*
+import com.amap.api.navi.AmapNaviPage
+import com.amap.api.navi.AmapNaviParams
+import com.amap.api.navi.AmapNaviType
+import com.amap.api.services.geocoder.*
+import com.laoqiu.amap_view.AmapViewPlugin.Companion.CREATED
+import com.laoqiu.amap_view.AmapViewPlugin.Companion.DESTROYED
+import com.laoqiu.amap_view.AmapViewPlugin.Companion.PAUSED
+import com.laoqiu.amap_view.AmapViewPlugin.Companion.RESUMED
+import com.laoqiu.amap_view.AmapViewPlugin.Companion.STOPPED
+import io.flutter.plugin.common.MethodCall
+import io.flutter.plugin.common.MethodChannel
+
+
+class AmapFactory(private val activityState: AtomicInteger, private val registrar: Registrar)
+    : PlatformViewFactory(StandardMessageCodec.INSTANCE) {
+
+    override fun create(context: Context, id: Int, args: Any): PlatformView {
+
+        // 申请权限
+        ActivityCompat.requestPermissions(registrar.activity(),
+                arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_PHONE_STATE),
+                321
+        )
+
+        // 初始化地图
+        val params = args as Map<String, Any>
+        var opts = Convert.toUnifiedMapOptions(params.get("options"))
+        var initialMarkers = params.get("markersToAdd")
+        val view = AMapView(context, id, activityState, registrar, opts, initialMarkers)
+        view.setup()
+
+        return view
+    }
+}
+
+@SuppressLint("CheckResult")
+class AMapView(context: Context,
+               id: Int,
+               private val activityState: AtomicInteger,
+               private val registrar: Registrar,
+               private val options: UnifiedMapOptions,
+               private val initialMarkers: Any?)
+    : PlatformView,
+        MethodChannel.MethodCallHandler,
+        AMap.OnMapLoadedListener,
+        AMap.OnMapClickListener,
+        AMap.OnInfoWindowClickListener,
+        AMap.OnMarkerClickListener,
+        AMap.OnCameraChangeListener,
+        AMap.OnMyLocationChangeListener,
+        Application.ActivityLifecycleCallbacks {
+
+    private val mapView: TextureMapView = TextureMapView(context, options.toAMapOptions())
+    private var map: AMap
+    private var mapReadyResult: MethodChannel.Result? = null
+    private val methodChannel: MethodChannel
+    private var disposed = false
+    private val registrarActivityHashCode: Int
+    private var markerController: MarkerController
+
+    init {
+        map = mapView.getMap()
+        map.setOnMapLoadedListener(this)
+
+        registrarActivityHashCode = registrar.activity().hashCode()
+
+        // 双端通信channel
+        methodChannel = MethodChannel(registrar.messenger(), "plugins.laoqiu.com/amap_view_$id")
+        methodChannel.setMethodCallHandler(this)
+
+        // marker控制器
+        markerController = MarkerController(methodChannel, mapView.map)
+    }
+
+    fun setup() {
+        when (activityState.get()) {
+            STOPPED -> {
+                mapView.onCreate(null)
+                mapView.onResume()
+                mapView.onPause()
+            }
+            PAUSED -> {
+                mapView.onCreate(null)
+                mapView.onResume()
+                mapView.onPause()
+            }
+            RESUMED -> {
+                mapView.onCreate(null)
+                mapView.onResume()
+            }
+            CREATED -> mapView.onCreate(null)
+            DESTROYED -> {
+            }
+            else -> throw IllegalArgumentException(
+                    "Cannot interpret " + activityState.get() + " as an activity state")
+        } // Nothing to do, the activity has been completely destroyed.
+        registrar.activity().application.registerActivityLifecycleCallbacks(this)
+    }
+
+    override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
+        when (call.method) {
+            "map#waitForMap" -> {
+                mapReadyResult = result
+            }
+            "map#update" -> {
+                // TODO: 更新地图状态处理
+                result.success(null)
+            }
+            "markers#update" -> {
+                var markersToAdd: Any? = call.argument("markersToAdd")
+                var markersToChange: Any? = call.argument("markersToChange")
+                var markerIdsToRemove: Any? = call.argument("markerIdsToRemove")
+                // controller process
+                markerController.addMarkers(markersToAdd as List<Any>)
+                markerController.changeMarkers(markersToChange as List<Any>)
+                markerController.removeMarkers(markerIdsToRemove as List<Any>)
+                result.success(null)
+            }
+            "camera#update" -> {
+                // TODO: 更新地图状态处理
+                result.success(null)
+            }
+            "map#navi" -> {
+                val naviType = call.argument<Int>("naviType") ?: AmapNaviType.DRIVER
+                var start = Convert.toPoi(call.argument("start"))
+                var end = Convert.toPoi(call.argument("end"))
+                // TODO: wayList参数未处理
+                var wayList = null
+                if (end != null) {
+                    AmapNaviPage.getInstance().showRouteActivity(
+                            registrar.activity(),
+                            AmapNaviParams(start, wayList, end, when (naviType) {
+                                1 -> AmapNaviType.WALK
+                                2 -> AmapNaviType.RIDE
+                                else -> AmapNaviType.DRIVER
+                            }),
+                            null
+                    )
+                }
+                result.success(null)
+            }
+            "search#reGeocode" -> {  // 逆地图编码获取地址信息
+                val latLntType = call.argument<Int>("latLntType") ?: 0
+                val radius = call.argument<Float>("radius") ?: 50f
+                var point = Convert.toLatLng(call.argument("point"))
+                if (point != null) {
+                    var query = RegeocodeQuery(Convert.toLatLntPoint(point), radius, when(latLntType){
+                        1 -> GeocodeSearch.GPS
+                        else -> GeocodeSearch.AMAP
+                    })
+                    GeocodeSearch(registrar.activity()).run {
+                        setOnGeocodeSearchListener(object: GeocodeSearch.OnGeocodeSearchListener{
+                            override fun onGeocodeSearched(geocodeResult: GeocodeResult?, resultId: Int) {
+                            }
+
+                            override fun onRegeocodeSearched(reGeocodeResult: RegeocodeResult?, resultID: Int) {
+                                if (reGeocodeResult != null) {
+                                    result.success(Convert.toJson(reGeocodeResult.regeocodeAddress))
+                                } else {
+                                    result.success(null)
+                                }
+                            }
+                        })
+
+                        getFromLocationAsyn(query)
+                    }
+                } else {
+                    result.success(null)
+                }
+            }
+            else -> result.notImplemented()
+        }
+    }
+
+    override fun onMapLoaded() {
+        mapReadyResult?.success(null)
+        // 地图点击事件监听
+        map.setOnMapClickListener(this)
+        // 地图移动事件监听
+        map.setOnCameraChangeListener(this)
+        // 设置地图marker点击事件监听
+        map.setOnMarkerClickListener(this)
+        // 设置地图infowindow点击事件监听
+        map.setOnInfoWindowClickListener(this)
+        // 设置地图是否显示当前位置蓝点
+        var myLocationEnable: Boolean = options.getMyLocationEnable()
+        if (myLocationEnable) {
+            map.setMyLocationEnabled(true)
+            var style = MyLocationStyle()
+            style.myLocationType(options.getMyLocationStyle())
+            // 设置蓝点类型
+            map.setMyLocationStyle(style)
+            // 设置是否显示移动按钮
+            map.getUiSettings().setMyLocationButtonEnabled(options.getMyLocationButtonEnabled())
+        }
+        // 初始化markers
+        updateInitialMarkers()
+    }
+
+    override fun getView(): View {
+        return mapView
+    }
+
+    override fun dispose() {
+        if (disposed) {
+            return
+        }
+        disposed = true
+        methodChannel.setMethodCallHandler(null)
+        mapView.onDestroy()
+        registrar.activity().application.unregisterActivityLifecycleCallbacks(this)
+    }
+
+    fun updateInitialMarkers() {
+        var markers = initialMarkers as List<Any>
+        markerController.addMarkers(markers)
+    }
+
+    // 地图监听事件
+    override fun onMapClick(point: LatLng) {
+        var p = Convert.toJson(point)
+        var arguments = hashMapOf<String, Any>("position" to p)
+        methodChannel.invokeMethod("map#onTap", arguments)
+    }
+
+    override fun onMarkerClick(marker: Marker): Boolean {
+        return markerController.onMarkerTap(marker.id)
+    }
+
+    override fun onInfoWindowClick(marker: Marker) {
+        markerController.onInfoWindowTap(marker.id)
+    }
+
+    override fun onMyLocationChange(location: Location) {
+        Log.d("onMyLocationChange", location.toString())
+        var arguments = hashMapOf<String, Any?>(
+                "location" to Convert.toJson(location)
+        )
+        methodChannel.invokeMethod("location#change", arguments)
+    }
+
+    override fun onCameraChange(position: CameraPosition) {
+        var arguments = hashMapOf<String, Any?>(
+                "position" to Convert.toJson(position)
+        )
+        methodChannel.invokeMethod("camera#onMove", arguments)
+    }
+
+    override fun onCameraChangeFinish(position: CameraPosition) {
+        var arguments = hashMapOf<String, Any?>(
+                "position" to Convert.toJson(position)
+        )
+        methodChannel.invokeMethod("camera#onIdle", arguments)
+    }
+
+    // 生命周期
+    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+        if (disposed || activity.hashCode() != registrarActivityHashCode) {
+            return
+        }
+        mapView.onCreate(savedInstanceState)
+    }
+
+    override fun onActivityStarted(activity: Activity) {
+        if (disposed || activity.hashCode() != registrarActivityHashCode) {
+            return
+        }
+    }
+
+    override fun onActivityResumed(activity: Activity) {
+        if (disposed || activity.hashCode() != registrarActivityHashCode) {
+            return
+        }
+        mapView.onResume()
+    }
+
+    override fun onActivityPaused(activity: Activity) {
+        if (disposed || activity.hashCode() != registrarActivityHashCode) {
+            return
+        }
+        mapView.onPause()
+    }
+
+    override fun onActivityStopped(activity: Activity) {
+        if (disposed || activity.hashCode() != registrarActivityHashCode) {
+            return
+        }
+    }
+
+    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
+        if (disposed || activity.hashCode() != registrarActivityHashCode) {
+            return
+        }
+        mapView.onSaveInstanceState(outState)
+    }
+
+    override fun onActivityDestroyed(activity: Activity) {
+        if (disposed || activity.hashCode() != registrarActivityHashCode) {
+            return
+        }
+        mapView.onDestroy()
+    }
+}
