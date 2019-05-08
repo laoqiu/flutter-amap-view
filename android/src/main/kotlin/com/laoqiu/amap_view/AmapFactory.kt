@@ -189,8 +189,10 @@ class AMapView(context: Context,
     }
 
     fun updateInitialMarkers() {
-        var markers = initialMarkers as List<Any>
-        markerController.addMarkers(markers)
+        if (initialMarkers != null) {
+            var markers = initialMarkers as List<Any>
+            markerController.addMarkers(markers)
+        }
     }
 
     // 地图监听事件
