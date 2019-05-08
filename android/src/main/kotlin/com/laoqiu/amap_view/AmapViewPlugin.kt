@@ -37,6 +37,12 @@ class AmapViewPlugin(registrar: Registrar) : Application.ActivityLifecycleCallba
 
             // 注册定位组件
             AmapLocationFactory(registrar)
+
+            // 注册导航组件
+            AmapNaviFactory(registrar)
+
+            // 注册搜索组件
+            AmapSearchFactory(registrar)
         }
     }
 

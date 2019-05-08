@@ -18,9 +18,6 @@ import java.util.concurrent.atomic.AtomicInteger
 import com.amap.api.maps.AMap
 import com.amap.api.maps.TextureMapView
 import com.amap.api.maps.model.*
-import com.amap.api.navi.AmapNaviPage
-import com.amap.api.navi.AmapNaviParams
-import com.amap.api.navi.AmapNaviType
 import com.amap.api.services.geocoder.*
 import com.laoqiu.amap_view.AmapViewPlugin.Companion.CREATED
 import com.laoqiu.amap_view.AmapViewPlugin.Companion.DESTROYED
@@ -147,54 +144,7 @@ class AMapView(context: Context,
                 // TODO: 更新地图状态处理
                 result.success(null)
             }
-            "map#navi" -> {
-                val naviType = call.argument<Int>("naviType") ?: AmapNaviType.DRIVER
-                var start = Convert.toPoi(call.argument("start"))
-                var end = Convert.toPoi(call.argument("end"))
-                // TODO: wayList参数未处理
-                var wayList = null
-                if (end != null) {
-                    AmapNaviPage.getInstance().showRouteActivity(
-                            registrar.activity(),
-                            AmapNaviParams(start, wayList, end, when (naviType) {
-                                1 -> AmapNaviType.WALK
-                                2 -> AmapNaviType.RIDE
-                                else -> AmapNaviType.DRIVER
-                            }),
-                            null
-                    )
-                }
-                result.success(null)
-            }
-            "search#reGeocode" -> {  // 逆地图编码获取地址信息
-                val latLntType = call.argument<Int>("latLntType") ?: 0
-                val radius = call.argument<Float>("radius") ?: 50f
-                var point = Convert.toLatLng(call.argument("point"))
-                if (point != null) {
-                    var query = RegeocodeQuery(Convert.toLatLntPoint(point), radius, when(latLntType){
-                        1 -> GeocodeSearch.GPS
-                        else -> GeocodeSearch.AMAP
-                    })
-                    GeocodeSearch(registrar.activity()).run {
-                        setOnGeocodeSearchListener(object: GeocodeSearch.OnGeocodeSearchListener{
-                            override fun onGeocodeSearched(geocodeResult: GeocodeResult?, resultId: Int) {
-                            }
 
-                            override fun onRegeocodeSearched(reGeocodeResult: RegeocodeResult?, resultID: Int) {
-                                if (reGeocodeResult != null) {
-                                    result.success(Convert.toJson(reGeocodeResult.regeocodeAddress))
-                                } else {
-                                    result.success(null)
-                                }
-                            }
-                        })
-
-                        getFromLocationAsyn(query)
-                    }
-                } else {
-                    result.success(null)
-                }
-            }
             else -> result.notImplemented()
         }
     }

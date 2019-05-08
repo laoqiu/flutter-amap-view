@@ -60,16 +60,4 @@ class AMapController {
     assert(cameraUpdate != null);
     await channel.invokeMethod('camera#update', cameraUpdate.toMap());
   }
-
-  /// 导航
-  Future<void> routeNavi(RouteNavi navi) async {
-    assert(navi != null);
-    await channel.invokeMethod('map#navi', navi.toMap());
-  }
-
-  /// 逆地理编码转换
-  Future<dynamic> reGeocodeSearch(ReGeocodeParams params) async {
-    assert(params != null);
-    return await channel.invokeMethod('search#reGeocode', params.toMap());
-  }
 }

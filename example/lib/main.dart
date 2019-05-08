@@ -71,8 +71,8 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  void _routeNavi() {
-    mapController.routeNavi(RouteNavi(end: Poi("下一站", LatLng(30.426789, 120.264577), "")));
+  Future<void> _routeNavi() async {
+    await AmapNavi.showRoute(RouteNavi(end: Poi("下一站", LatLng(30.426789, 120.264577), "")));
   }
 
   void _onMapCreated(AMapController controller) {

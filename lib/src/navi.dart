@@ -1,5 +1,16 @@
 part of amap_view;
 
+class AmapNavi {
+  static const MethodChannel _channel =
+  const MethodChannel('plugins.laoqiu.com/amap_view_navi');
+
+  /// 导航
+  static Future<void> showRoute(RouteNavi navi) async {
+    assert(navi != null);
+    await _channel.invokeMethod('navi#showRoute', navi.toMap());
+  }
+
+}
 
 class RouteNavi {
   RouteNavi({this.naviType = NaviType.driver, this.start, @required this.end, this.wayList})
