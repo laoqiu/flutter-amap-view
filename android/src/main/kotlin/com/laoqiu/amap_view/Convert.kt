@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Bitmap
 import android.os.AsyncTask
 import android.util.Log
+import com.amap.api.services.geocoder.GeocodeAddress
 import java.io.IOException
 import java.io.InputStream
 import java.net.URL
@@ -310,6 +311,27 @@ class Convert {
             data.put("street", address.streetNumber.street + address.streetNumber.number)
             data.put("building", address.building)
             data.put("formatted_address", address.formatAddress)
+            return data
+        }
+
+        fun toJson(result: List<GeocodeAddress>): Any {
+            val data = mutableListOf<Any>()
+            for (address in result) {
+                data.add(toJson(address))
+            }
+            return data
+        }
+
+        fun toJson(address: GeocodeAddress): Any {
+            val data = HashMap<String, Any>()
+            data.put("province", address.province)
+            data.put("city", address.city)
+            data.put("district", address.district)
+            data.put("township", address.township)
+            data.put("building", address.building)
+            data.put("formatted_address", address.formatAddress)
+            data.put("latitude", address.latLonPoint.latitude)
+            data.put("longitude", address.latLonPoint.longitude)
             return data
         }
 

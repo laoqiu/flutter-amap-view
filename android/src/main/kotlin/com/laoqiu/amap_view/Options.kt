@@ -14,7 +14,7 @@ class UnifiedMapOptions(
         private val scaleControlsEnabled: Boolean = false,
         private val compassEnabled: Boolean = false,
         private val tiltGesturesEnabled: Boolean = true,
-        private val zoomControlsEnabled: Boolean = true,
+        private val zoomControlsEnabled: Boolean = false,
         private val zoomGesturesEnabled: Boolean = true,
         private val myLocationEnabled: Boolean = false,
         private val setMyLocationButtonEnabled: Boolean = false) {

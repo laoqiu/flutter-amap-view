@@ -18,7 +18,7 @@ class AmapView extends StatefulWidget {
     this.scrollGesturesEnabled = true,
     this.scaleControlsEnabled = false,
     this.tiltGesturesEnabled = true,
-    this.zoomControlsEnabled = true,
+    this.zoomControlsEnabled = false,
     this.markers,
     this.onMapCreated,
     this.onCameraMove,
