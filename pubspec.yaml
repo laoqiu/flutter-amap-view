@@ -1,8 +1,8 @@
 name: amap_view
 description: A new Flutter plugin.
 version: 0.0.1
-author:
-homepage:
+author: Laoqiu <laoqiu.com@gmail.com>
+homepage: https://github.com/laoqiu/flutter-amap-view
 
 environment:
   sdk: ">=2.1.0 <3.0.0"

@@ -32,7 +32,7 @@ class AmapView extends StatefulWidget {
   /// 地图类型
   final MapType mapType;
 
-  /// 当前位置的类型，仅在[myLocationEnabled]为true时有效
+  /// 当前位置的类型，仅在[myLocationEnabled]为true时有效 (android only)
   final MyLocationStyle myLocationStyle;
 
   /// 初始化地图位置
@@ -50,7 +50,7 @@ class AmapView extends StatefulWidget {
   /// 设置地图是否显示比例尺，默认为false
   final bool scaleControlsEnabled;
 
-  /// 设置地图是否可以通过手势倾斜（3D效果），默认为true
+  /// 设置地图是否可以通过手势倾斜（3D效果），默认为true (android only)
   final bool tiltGesturesEnabled;
 
   /// 设置地图是否允许缩放，默认为true
@@ -119,6 +119,7 @@ class _AmapViewState extends State<AmapView> {
   void didUpdateWidget(AmapView oldWidget) {
     super.didUpdateWidget(oldWidget);
     _updateMarkers();
+    _updateOptions();
   }
 
   @override
@@ -128,7 +129,7 @@ class _AmapViewState extends State<AmapView> {
     ].toSet();
 
     final Map<String, dynamic> creationParams = <String, dynamic>{
-      "options": _mapOptions.toEncodedJson(),
+      "options": _mapOptions.toMap(),
       "markersToAdd": _serializeMarkerSet(widget.markers),
     };
 

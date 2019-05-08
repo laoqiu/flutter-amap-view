@@ -5,9 +5,6 @@
 //  Created by QiuLiang Wang on 2019/4/22.
 //
 
-import Foundation
-import MAMapKit
-
 class AmapViewFactory: NSObject, FlutterPlatformViewFactory {
     var messenger: FlutterBinaryMessenger
     

@@ -30,7 +30,7 @@ class LatLng {
     if (json == null) {
       return null;
     }
-    return LatLng(json[0], json[1]);
+    return LatLng(json["longitude"], json["latitude"]);
   }
 
   @override

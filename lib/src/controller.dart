@@ -27,6 +27,9 @@ class AMapController {
       case 'infoWindow#onTap':
         _mapState.onInfoWindowTap(call.arguments['markerId']);
         break;
+      case 'poi#onTap':
+        // poi点击时回调
+        break;
       case 'camera#onMove':
         if (_mapState.widget.onCameraMove != null)
           _mapState.widget

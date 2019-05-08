@@ -7,7 +7,6 @@ import com.amap.api.services.core.LatLonPoint
 import com.amap.api.services.geocoder.RegeocodeAddress
 import com.google.gson.Gson
 import io.flutter.view.FlutterMain
-import java.util.Arrays
 import android.graphics.*
 import android.graphics.BitmapFactory
 import android.graphics.Bitmap
@@ -95,6 +94,34 @@ fun getCroppedBitmap(bmp: Bitmap, radius: Int): Bitmap {
 
 class Convert {
     companion object {
+        fun updateMapOptions(options: Any?, sink: AmapOptionsSink) {
+            val opts = options as Map<String, Any>
+            val compassEnabled = opts.get("compassEnabled")
+            if (compassEnabled != null) {
+                sink.setCompassEnabled(compassEnabled as Boolean)
+            }
+            val mapType = opts.get("mapType")
+            if (mapType != null) {
+                sink.setMapType(mapType as Int)
+            }
+            val myLocationEnabled = opts.get("myLocationEnabled")
+            if (myLocationEnabled != null) {
+                sink.setMyLocationEnabled(myLocationEnabled as Boolean)
+            }
+            val scaleControlsEnabled = opts.get("scaleControlsEnabled")
+            if (scaleControlsEnabled != null) {
+                sink.setScaleEnabled(scaleControlsEnabled as Boolean)
+            }
+            val zoomControlsEnabled = opts.get("zoomControlsEnabled")
+            if (zoomControlsEnabled != null) {
+                sink.setZoomControlsEnabled(zoomControlsEnabled as Boolean)
+            }
+            val scrollGesturesEnabled = opts.get("scrollGesturesEnabled")
+            if (scrollGesturesEnabled != null) {
+                sink.setScrollGesturesEnabled(scrollGesturesEnabled as Boolean)
+            }
+        }
+
         fun interpretMarkerOptions(marker: Marker, new: UnifiedMarkerOptions, old: UnifiedMarkerOptions?) {
             if (old == null) {
                 interpretMarkerIcon(new.icon, marker)
@@ -182,11 +209,13 @@ class Convert {
         }
 
         fun toUnifiedMapOptions(options: Any?): UnifiedMapOptions {
-            return Gson().fromJson<UnifiedMapOptions>(options as String)
+            var data = options as Map<String, Any>
+            return Gson().fromJson<UnifiedMapOptions>(Gson().toJson(data))
         }
 
         fun toUnifiedMarkerOptions(options: Any): UnifiedMarkerOptions {
-            return Gson().fromJson<UnifiedMarkerOptions>(options as String)
+            var data = options as Map<String, Any>
+            return Gson().fromJson<UnifiedMarkerOptions>(Gson().toJson(data))
         }
 
         fun markerIdToJson(markerId: String): Any {
@@ -228,7 +257,11 @@ class Convert {
         }
 
         fun toJson(latLng: LatLng): Any {
-            return Arrays.asList(latLng.latitude, latLng.longitude)
+            // return Arrays.asList(latLng.latitude, latLng.longitude)
+            val data = HashMap<String, Any>()
+            data.put("latitude", latLng.latitude)
+            data.put("longitude", latLng.longitude)
+            return data
         }
 
         fun toJson(location: Location): Any {
@@ -294,10 +327,6 @@ class Convert {
 
         fun toMap(o: Any): HashMap<String, Any> {
             return o as HashMap<String, Any>
-        }
-
-        fun toEncodedJson(o: Any): String {
-            return Gson().toJson(o)
         }
 
     }

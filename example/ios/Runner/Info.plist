@@ -51,7 +51,11 @@
 		<string>fetch</string>
 		<string>remote-notification</string>
 	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>允许访问用户位置</string>
 	<key>io.flutter.embedded_views_preview</key>
-    <true/>
+	<true/>
+	<key>amap_key</key>
+	<string>891b31d10a27751bbd0c046e1213e0f6</string>
 </dict>
 </plist>

@@ -1,5 +1,4 @@
 #import "AmapViewPlugin.h"
-#import <AMapFoundationKit/AMapFoundationKit.h>
 #import <amap_view/amap_view-Swift.h>
 
 @implementation AmapViewPlugin

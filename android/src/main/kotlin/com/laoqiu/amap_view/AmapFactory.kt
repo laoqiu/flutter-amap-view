@@ -72,7 +72,9 @@ class AMapView(context: Context,
         AMap.OnMarkerClickListener,
         AMap.OnCameraChangeListener,
         AMap.OnMyLocationChangeListener,
+        AmapOptionsSink,
         Application.ActivityLifecycleCallbacks {
+
 
     private val mapView: TextureMapView = TextureMapView(context, options.toAMapOptions())
     private var map: AMap
@@ -127,7 +129,8 @@ class AMapView(context: Context,
                 mapReadyResult = result
             }
             "map#update" -> {
-                // TODO: 更新地图状态处理
+                var options: Any? = call.argument("options")
+                Convert.updateMapOptions(options, this)
                 result.success(null)
             }
             "markers#update" -> {
@@ -275,6 +278,39 @@ class AMapView(context: Context,
                 "position" to Convert.toJson(position)
         )
         methodChannel.invokeMethod("camera#onIdle", arguments)
+    }
+
+    // AmapOptionsSink
+    override fun setCompassEnabled(compassEnabled: Boolean) {
+        map.uiSettings.isCompassEnabled = compassEnabled
+    }
+
+    override fun setMapType(mapType: Int) {
+        map.mapType = mapType
+    }
+
+    override fun setMyLocationEnabled(myLocationEnabled: Boolean) {
+        map.isMyLocationEnabled = myLocationEnabled
+    }
+
+    override fun setRotateGesturesEnabled(rotateGesturesEnabled: Boolean) {
+        map.uiSettings.isRotateGesturesEnabled = rotateGesturesEnabled
+    }
+
+    override fun setScaleEnabled(scaleEnabled: Boolean) {
+        map.uiSettings.isScaleControlsEnabled = scaleEnabled
+    }
+
+    override fun setScrollGesturesEnabled(scrollGesturesEnabled: Boolean) {
+        map.uiSettings.isScrollGesturesEnabled = scrollGesturesEnabled
+    }
+
+    override fun setZoomGesturesEnabled(zoomGesturesEnabled: Boolean) {
+        map.uiSettings.isZoomGesturesEnabled = zoomGesturesEnabled
+    }
+
+    override fun setZoomControlsEnabled(zoomControlsEnabled: Boolean) {
+        map.uiSettings.isZoomControlsEnabled = zoomControlsEnabled
     }
 
     // 生命周期

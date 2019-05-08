@@ -25,11 +25,11 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    // imageConfiguration = createLocalImageConfiguration(context);
-    // setState(() {
-    //   markers[centerMarkerId] = Marker(markerId: centerMarkerId, position: center);
-    // });
-    // initPlatformState();
+    imageConfiguration = createLocalImageConfiguration(context);
+    setState(() {
+      markers[centerMarkerId] = Marker(markerId: centerMarkerId, position: center);
+    });
+    initPlatformState();
   }
 
   Future<void> initPlatformState() async {
@@ -43,7 +43,7 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       _platformVersion = platformVersion;
     });
-    await AmapLocation.start();
+    // await AmapLocation.start();
   }
 
   void _addMarker() async {
@@ -95,20 +95,22 @@ class _MyAppState extends State<MyApp> {
                 initialCameraPosition:
                     CameraPosition(target: center, zoom: 13),
                 myLocationEnabled: true,
-                //markers: Set<Marker>.of(markers.values),
+                scaleControlsEnabled: false,
+                markers: Set<Marker>.of(markers.values),
                 // onCameraMove: (pos) {
                 //   setState(() {
                 //     markers[centerMarkerId] = markers[centerMarkerId].copyWith(positionParam: pos.target);
                 //   });
                 // },
-                // onCameraIdle: (pos) async {
-                //   var result = await mapController.reGeocodeSearch(ReGeocodeParams(point: pos.target));
-                //   print("onCameraIdle reGeocodeSearch: $result");
-                // },
-                // onTap: (pos){
-                //   print("onTap====> $pos");
-                // },
-                // onMapCreated: _onMapCreated,
+                onCameraIdle: (pos) {
+                  //var result = await mapController.reGeocodeSearch(ReGeocodeParams(point: pos.target));
+                  //print("onCameraIdle reGeocodeSearch: $result");
+                  print("onCameraIdle =====> $pos");
+                },
+                onTap: (pos){
+                  print("onTap====> $pos");
+                },
+                onMapCreated: _onMapCreated,
               ),
             ),
             Text("版本号 $_platformVersion"),

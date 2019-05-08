@@ -231,11 +231,11 @@ Map<MarkerId, Marker> _keyByMarkerId(Iterable<Marker> markers) {
       (Marker marker) => MapEntry<MarkerId, Marker>(marker.markerId, marker)));
 }
 
-List<String> _serializeMarkerSet(Set<Marker> markers) {
+List<dynamic> _serializeMarkerSet(Set<Marker> markers) {
   if (markers == null) {
     return null;
   }
-  return markers.map<String>((Marker m) => jsonEncode(m.toMap())).toList();
+  return markers.map<dynamic>((Marker m) => m.toMap()).toList();
 }
 
 

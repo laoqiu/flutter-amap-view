@@ -4,11 +4,6 @@
 //
 //  Created by QiuLiang Wang on 2019/4/23.
 //
-
-import Foundation
-import MAMapKit
-
-
 struct LatLng: Codable {
     let latitude: Double
     let longitude: Double
