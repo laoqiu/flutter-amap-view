@@ -26,14 +26,15 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     imageConfiguration = createLocalImageConfiguration(context);
     setState(() {
-      markers[centerMarkerId] = Marker(markerId: centerMarkerId, position: center);
+      markers[centerMarkerId] =
+          Marker(markerId: centerMarkerId, position: center);
     });
     initPlatformState();
   }
 
   Future<void> initPlatformState() async {
     await AmapLocation.start();
-    AmapLocation.listen((event){
+    AmapLocation.listen((event) {
       print(event);
     });
   }
@@ -43,15 +44,21 @@ class _MyAppState extends State<MyApp> {
     _markerIdCounter++;
     final MarkerId markerId = MarkerId(markerIdVal);
     var markerIcon = await BitmapDescriptor.fromAvatarWithAssetImage(
-        imageConfiguration,
-        "assets/map-point.png",
-        Avatar(url: "https://img5.duitang.com/uploads/item/201512/18/20151218165511_AQW4B.jpeg", size: Size(112, 112), offset: Offset(4, 4), radius: 56),
+      imageConfiguration,
+      "assets/map-point.png",
+      Avatar(
+          url:
+              "https://img5.duitang.com/uploads/item/201512/18/20151218165511_AQW4B.jpeg",
+          size: Size(112, 112),
+          offset: Offset(4, 4),
+          radius: 56),
     );
     setState(() {
       markers[markerId] = Marker(
         markerId: markerId,
         icon: markerIcon,
-        position: LatLng(center.latitude + sin(_markerIdCounter * pi / 6.0) / 20.0,
+        position: LatLng(
+            center.latitude + sin(_markerIdCounter * pi / 6.0) / 20.0,
             center.longitude + sin(_markerIdCounter * pi / 6.0) / 20.0),
       );
     });
@@ -64,7 +71,8 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _routeNavi() async {
-    await AmapNavi.showRoute(RouteNavi(end: Poi("下一站", LatLng(30.426789, 120.264577), "")));
+    await AmapNavi.showRoute(
+        RouteNavi(end: Poi("下一站", LatLng(30.426789, 120.264577), "")));
   }
 
   void _onMapCreated(AMapController controller) {
@@ -84,22 +92,23 @@ class _MyAppState extends State<MyApp> {
               width: double.infinity,
               height: 200,
               child: AmapView(
-                initialCameraPosition:
-                    CameraPosition(target: center, zoom: 13),
+                initialCameraPosition: CameraPosition(target: center, zoom: 13),
                 myLocationEnabled: true,
                 scaleControlsEnabled: false,
                 markers: Set<Marker>.of(markers.values),
-                // onCameraMove: (pos) {
-                //   setState(() {
-                //     markers[centerMarkerId] = markers[centerMarkerId].copyWith(positionParam: pos.target);
-                //   });
-                // },
+                onCameraMove: (pos) {
+                  print("onCameraMove ${pos.target}");
+                  setState(() {
+                    markers[centerMarkerId] = markers[centerMarkerId]
+                        .copyWith(positionParam: pos.target);
+                  });
+                },
                 onCameraIdle: (pos) {
                   //var result = await mapController.reGeocodeSearch(ReGeocodeParams(point: pos.target));
                   //print("onCameraIdle reGeocodeSearch: $result");
                   print("onCameraIdle =====> $pos");
                 },
-                onTap: (pos){
+                onTap: (pos) {
                   print("onTap====> $pos");
                 },
                 onMapCreated: _onMapCreated,
