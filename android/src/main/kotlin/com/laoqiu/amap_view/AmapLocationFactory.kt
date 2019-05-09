@@ -31,12 +31,12 @@ class AmapLocationFactory(private val registrar: PluginRegistry.Registrar) :
         var eventChannel = EventChannel(registrar.messenger(), "plugins.laoqiu.com/amap_view_location_event")
         eventChannel.setStreamHandler(object: EventChannel.StreamHandler{
             override fun onListen(p0: Any?, sink: EventChannel.EventSink?) {
-                Log.d("location", "onListen")
+                // Log.d("location", "onListen")
                 eventSink = sink
             }
 
             override fun onCancel(p0: Any?) {
-                Log.d("location", "onCancel")
+                // Log.d("location", "onCancel")
             }
         })
 
@@ -47,11 +47,8 @@ class AmapLocationFactory(private val registrar: PluginRegistry.Registrar) :
 
     override fun onMethodCall(call: MethodCall, result: Result) {
         when (call.method) {
-            "getPlatformVersion" -> {
-                result.success("Android ${android.os.Build.VERSION.RELEASE}")
-            }
             "location#start" -> {
-                Log.d("location", "start")
+                // Log.d("location", "start")
 
                 // 申请权限
                 ActivityCompat.requestPermissions(registrar.activity(),
@@ -68,7 +65,7 @@ class AmapLocationFactory(private val registrar: PluginRegistry.Registrar) :
                 result.success(null)
             }
             "location#stop" -> {
-                Log.d("location", "stop")
+                // Log.d("location", "stop")
                 locationClient.stopLocation()
                 result.success(null)
             }
@@ -77,7 +74,7 @@ class AmapLocationFactory(private val registrar: PluginRegistry.Registrar) :
     }
 
     override fun onLocationChanged(location: AMapLocation?) {
-        Log.d("location", location.toString())
+        // Log.d("location", location.toString())
         if (location != null) {
             if (location.errorCode == 0) {
                 eventSink?.success(Convert.toJson(location))

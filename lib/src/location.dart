@@ -1,16 +1,19 @@
 part of amap_view;
 
 class AmapLocation {
-  static const MethodChannel _channel =
-  const MethodChannel('plugins.laoqiu.com/amap_view_location');
-
-  static Future<String> get platformVersion async {
-    final String version = await _channel.invokeMethod('getPlatformVersion');
-    return version;
-  }
+  static const _channel = MethodChannel('plugins.laoqiu.com/amap_view_location');
+  static const _event = EventChannel('plugins.laoqiu.com/amap_view_location_event');
 
   static Future<void> start() async {
     await _channel.invokeMethod('location#start');
+  }
+
+  static Future<void> stop() async {
+    await _channel.invokeMethod('location#stop');
+  }
+
+  static void listen(Function callback) {
+    _event.receiveBroadcastStream().listen(callback);
   }
 }
 

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:math';
 
-import 'package:flutter/services.dart';
 import 'package:amap_view/amap_view.dart';
 
 void main() => runApp(MyApp());
@@ -33,17 +32,10 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-      platformVersion = await AmapLocation.platformVersion;
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-    setState(() {
-      _platformVersion = platformVersion;
+    await AmapLocation.start();
+    AmapLocation.listen((event){
+      print(event);
     });
-    // await AmapLocation.start();
   }
 
   void _addMarker() async {
