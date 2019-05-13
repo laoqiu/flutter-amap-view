@@ -311,6 +311,8 @@ class Convert {
             data.put("street", address.streetNumber.street + address.streetNumber.number)
             data.put("building", address.building)
             data.put("formatted_address", address.formatAddress)
+            data.put("pois", address.pois)
+            data.put("neighborhood", address.neighborhood)
             return data
         }
 
@@ -330,6 +332,7 @@ class Convert {
             data.put("township", address.township)
             data.put("building", address.building)
             data.put("formatted_address", address.formatAddress)
+            data.put("neighborhood", address.neighborhood)
             data.put("latitude", address.latLonPoint.latitude)
             data.put("longitude", address.latLonPoint.longitude)
             return data
