@@ -311,7 +311,6 @@ class Convert {
             data.put("street", address.streetNumber.street + address.streetNumber.number)
             data.put("building", address.building)
             data.put("formatted_address", address.formatAddress)
-            data.put("pois", address.pois)
             data.put("neighborhood", address.neighborhood)
             return data
         }
