@@ -312,6 +312,7 @@ class Convert {
             data.put("building", address.building)
             data.put("formatted_address", address.formatAddress)
             data.put("neighborhood", address.neighborhood)
+            data.put("ad_code", address.adCode)
             return data
         }
 
