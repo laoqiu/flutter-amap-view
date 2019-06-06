@@ -4,8 +4,8 @@ class AmapLocation {
   static const _channel = MethodChannel('plugins.laoqiu.com/amap_view_location');
   static const _event = EventChannel('plugins.laoqiu.com/amap_view_location_event');
 
-  static Future<void> start() async {
-    await _channel.invokeMethod('location#start');
+  static Future<void> start({int interval}) async {
+    await _channel.invokeMethod('location#start', {"interval": interval});
   }
 
   static Future<void> stop() async {
