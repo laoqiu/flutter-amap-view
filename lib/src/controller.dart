@@ -27,6 +27,9 @@ class AMapController {
       case 'infoWindow#onTap':
         _mapState.onInfoWindowTap(call.arguments['markerId']);
         break;
+      case 'polyline#onTap':
+        _mapState.onPolylineTap(call.arguments['polylineId']);
+        break;
       case 'poi#onTap':
         // poi点击时回调
         break;
@@ -53,6 +56,11 @@ class AMapController {
   Future<void> _updateMarkers(_MarkerUpdates markerUpdates) async {
     assert(markerUpdates != null);
     await channel.invokeMethod('markers#update', markerUpdates.toMap());
+  }
+
+  Future<void> _updatePolylines(_PolylineUpdates polylineUpdates) async {
+    assert(polylineUpdates != null);
+    await channel.invokeMethod('polylines#update', polylineUpdates.toMap());
   }
 
   /// 更新地图视图状态

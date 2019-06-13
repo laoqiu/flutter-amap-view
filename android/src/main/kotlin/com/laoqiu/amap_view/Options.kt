@@ -1,5 +1,7 @@
 package com.laoqiu.amap_view
 
+import android.graphics.Color
+import android.util.Log
 import com.amap.api.maps.AMap
 import com.amap.api.maps.AMapOptions
 import com.amap.api.maps.model.*
@@ -84,4 +86,23 @@ class UnifiedMarkerOptions(
         return opts
     }
 
+}
+
+class UnifiedPolylineOptions(
+        var polylineId: String,
+        val visible: Boolean = true,
+        var points: List<LatLng>,
+        var color: Number,
+        var width: Float = 10.0f,
+        val zIndex: Float = 1.0f) {
+
+    fun toPolylineOptions(): PolylineOptions {
+        var opts = PolylineOptions()
+                .visible(visible)
+                .addAll(points)
+                .color(color.toInt())
+                .width(width)
+                .zIndex(zIndex)
+        return opts
+    }
 }

@@ -20,6 +20,7 @@ class AmapView extends StatefulWidget {
     this.tiltGesturesEnabled = true,
     this.zoomControlsEnabled = false,
     this.markers,
+    this.polylines,
     this.onMapCreated,
     this.onCameraMove,
     this.onCameraIdle,
@@ -62,6 +63,9 @@ class AmapView extends StatefulWidget {
   /// 地图点标志
   final Set<Marker> markers;
 
+  /// 折线
+  final Set<Polyline> polylines;
+
   /// 地图创建成功回调
   final MapCreatedCallback onMapCreated;
 
@@ -90,6 +94,7 @@ class AmapView extends StatefulWidget {
 class _AmapViewState extends State<AmapView> {
   final Completer<AMapController> _controller = Completer<AMapController>();
   Map<MarkerId, Marker> _markers = <MarkerId, Marker>{};
+  Map<PolylineId, Polyline> _polylines = <PolylineId, Polyline>{};
   _AMapOptions _mapOptions;
 
   void _updateOptions() async {
@@ -108,17 +113,26 @@ class _AmapViewState extends State<AmapView> {
     _markers = _keyByMarkerId(widget.markers);
   }
 
+  void _updatePolylines() async {
+    final AMapController controller = await _controller.future;
+    controller._updatePolylines(
+        _PolylineUpdates.from(_polylines.values.toSet(), widget.polylines));
+    _polylines = _keyByPolylineId(widget.polylines);
+  }
+
   @override
   void initState() {
     super.initState();
     _mapOptions = _AMapOptions.fromWidget(widget);
     _markers = _keyByMarkerId(widget.markers);
+    _polylines = _keyByPolylineId(widget.polylines);
   }
 
   @override
   void didUpdateWidget(AmapView oldWidget) {
     super.didUpdateWidget(oldWidget);
     _updateMarkers();
+    _updatePolylines();
     _updateOptions();
   }
 
@@ -131,6 +145,7 @@ class _AmapViewState extends State<AmapView> {
     final Map<String, dynamic> creationParams = <String, dynamic>{
       "options": _mapOptions.toMap(),
       "markersToAdd": _serializeMarkerSet(widget.markers),
+      "polylinesToAdd": _serializePolylineSet(widget.polylines),
     };
 
     if (defaultTargetPlatform == TargetPlatform.android) {
@@ -179,6 +194,12 @@ class _AmapViewState extends State<AmapView> {
     assert(markerIdParam != null);
     final MarkerId markerId = MarkerId(markerIdParam);
     _markers[markerId].infoWindow.onTap();
+  }
+
+  void onPolylineTap(String polylineIdParam) {
+    assert(polylineIdParam != null);
+    final PolylineId polylineId = PolylineId(polylineIdParam);
+    _polylines[polylineId].onTap();
   }
 }
 

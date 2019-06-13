@@ -1,6 +1,7 @@
 package com.laoqiu.amap_view
 
 import com.amap.api.services.geocoder.*
+import com.amap.api.services.route.*
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.PluginRegistry
@@ -55,7 +56,7 @@ class AmapSearchFactory(private val registrar: PluginRegistry.Registrar) :
                         setOnGeocodeSearchListener(object: GeocodeSearch.OnGeocodeSearchListener{
                             override fun onGeocodeSearched(geocodeResult: GeocodeResult?, resultId: Int) {
                                 if (geocodeResult != null) {
-                                    result.success(Convert.toJson(geocodeResult.geocodeAddressList))
+                                    result.success(Convert.addressToJson(geocodeResult.geocodeAddressList))
                                 } else {
                                     result.success(null)
                                 }
@@ -70,6 +71,39 @@ class AmapSearchFactory(private val registrar: PluginRegistry.Registrar) :
                 } else {
                     result.success(null)
                 }
+            }
+            "search#route" -> {
+                var start = Convert.toLatLng(call.argument("start"))
+                var end = Convert.toLatLng(call.argument("end"))
+                val drivingMode = call.argument<Int>("drivingMode") ?: 0
+                var wayPoints = Convert.toWayList(call.argument("wayPoints")) // 途经点
+
+                if (start != null && end != null) {
+                    var fromAndTo = RouteSearch.FromAndTo(Convert.toLatLntPoint(start), Convert.toLatLntPoint(end))
+                    var query = RouteSearch.DriveRouteQuery(fromAndTo, drivingMode, wayPoints, null, "")
+                    RouteSearch(registrar.activity()).run {
+                        setRouteSearchListener(object: RouteSearch.OnRouteSearchListener{
+                            override fun onBusRouteSearched(p0: BusRouteResult?, p1: Int) {
+                            }
+                            override fun onDriveRouteSearched(routeResult: DriveRouteResult?, code: Int) {
+                                // 这里返回驾车路径规划结果
+                                if (routeResult != null) {
+                                    result.success(Convert.pathToJson(routeResult.paths))
+                                } else {
+                                    result.success(null)
+                                }
+
+                            }
+                            override fun onRideRouteSearched(p0: RideRouteResult?, p1: Int) {
+                            }
+                            override fun onWalkRouteSearched(p0: WalkRouteResult?, p1: Int) {
+                            }
+                        })
+
+                        calculateDriveRouteAsyn(query)
+                    }
+                }
+
             }
             else -> result.notImplemented()
         }

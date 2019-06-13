@@ -10,6 +10,12 @@ class AmapSearch {
     return await _channel.invokeMethod('search#reGeocode', params.toMap());
   }
 
+  /// 行车路径规划
+  static Future<dynamic> route(RouteParams params) async {
+    assert(params != null);
+    return await _channel.invokeMethod('search#route', params.toMap());
+  }
+
 }
 
 class ReGeocodeParams {
@@ -30,4 +36,23 @@ class ReGeocodeParams {
 
   @override
   String toString() => '$runtimeType($latLntType, $point, $radius)';
+}
+
+
+class RouteParams {
+  RouteParams({@required this.start, @required this.end, this.wayPoints});
+  final LatLng start;
+  final LatLng end;
+  final List<LatLng> wayPoints;
+
+  Map<String, dynamic> toMap() {
+    return {
+      "start": start.toMap(),
+      "end": end.toMap(),
+      "wayPoints": wayPoints?.map((i)=> i.toMap())?.toList(),
+    };
+  }
+
+  @override
+  String toString() => '$runtimeType($start, $end, $wayPoints)';
 }

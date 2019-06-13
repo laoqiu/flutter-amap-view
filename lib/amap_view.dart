@@ -15,6 +15,7 @@ part 'src/controller.dart';
 part 'src/location.dart';
 part 'src/ui.dart';
 part 'src/marker.dart';
+part 'src/polyline.dart';
 part 'src/bitmap.dart';
 part 'src/camera.dart';
 part 'src/navi.dart';

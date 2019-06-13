@@ -13,6 +13,8 @@ import android.graphics.Bitmap
 import android.os.AsyncTask
 import android.util.Log
 import com.amap.api.services.geocoder.GeocodeAddress
+import com.amap.api.services.route.DrivePath
+import com.amap.api.services.route.DriveStep
 import java.io.IOException
 import java.io.InputStream
 import java.net.URL
@@ -209,6 +211,24 @@ class Convert {
             }
         }
 
+        fun interpretPolylineOptions(polyline: Polyline, new: UnifiedPolylineOptions, old: UnifiedPolylineOptions?) {
+            if (old == null) {
+              return
+            }
+            if (old.visible != new.visible) {
+                polyline.isVisible = new.visible
+            }
+            if (old.color != new.color) {
+                polyline.color = new.color.toInt()
+            }
+            if (old.points != new.points) {
+                polyline.points = new.points
+            }
+            if (old.width != new.width) {
+                polyline.width = new.width
+            }
+        }
+
         fun toUnifiedMapOptions(options: Any?): UnifiedMapOptions {
             var data = options as Map<String, Any>
             return Gson().fromJson<UnifiedMapOptions>(Gson().toJson(data))
@@ -219,9 +239,21 @@ class Convert {
             return Gson().fromJson<UnifiedMarkerOptions>(Gson().toJson(data))
         }
 
+        fun toUnifiedPolylineOptions(options: Any?): UnifiedPolylineOptions {
+            var data = options as Map<String, Any>
+            return Gson().fromJson<UnifiedPolylineOptions>(Gson().toJson(data))
+        }
+
         fun markerIdToJson(markerId: String): Any {
             var data = hashMapOf<String, Any>(
                     "markerId" to markerId
+            )
+            return data
+        }
+
+        fun polylineIdToJson(polylineId: String): Any {
+            var data = hashMapOf<String, Any>(
+                    "polylineId" to polylineId
             )
             return data
         }
@@ -255,6 +287,46 @@ class Convert {
 
         fun toLatLntPoint(latLng: LatLng): LatLonPoint {
             return LatLonPoint(latLng.latitude, latLng.longitude)
+        }
+
+        fun toWayList(o: Any?): List<LatLonPoint>? {
+            if (o == null) {
+                return null
+            }
+            var result = mutableListOf<LatLonPoint>()
+            var data = toList(o)
+            for (i in data) {
+                var latLng= toLatLng(i)
+                if (latLng != null) {
+                    result.add(toLatLntPoint(latLng))
+                }
+            }
+            return result
+        }
+
+
+        fun addressToJson(list: List<GeocodeAddress>): Any {
+            val data = mutableListOf<Any>()
+            for (address in list) {
+                data.add(toJson(address))
+            }
+            return data
+        }
+
+        fun pathToJson(list: List<DrivePath>): Any {
+            val data = mutableListOf<Any>()
+            for (path in list) {
+                data.add(toJson(path))
+            }
+            return data
+        }
+
+        fun polylineToJson(list: List<LatLonPoint>): Any {
+            val data = mutableListOf<Any>()
+            for (point in list) {
+                data.add(toJson(point))
+            }
+            return data
         }
 
         fun toJson(latLng: LatLng): Any {
@@ -316,14 +388,6 @@ class Convert {
             return data
         }
 
-        fun toJson(result: List<GeocodeAddress>): Any {
-            val data = mutableListOf<Any>()
-            for (address in result) {
-                data.add(toJson(address))
-            }
-            return data
-        }
-
         fun toJson(address: GeocodeAddress): Any {
             val data = HashMap<String, Any>()
             data.put("province", address.province)
@@ -335,6 +399,32 @@ class Convert {
             data.put("neighborhood", address.neighborhood)
             data.put("latitude", address.latLonPoint.latitude)
             data.put("longitude", address.latLonPoint.longitude)
+            return data
+        }
+
+        fun toJson(point: LatLonPoint): Any {
+            val data = HashMap<String, Any>()
+            data.put("longitude", point.longitude)
+            data.put("latitude", point.latitude)
+            return data
+        }
+
+        fun toJson(path: DrivePath): Any {
+            val data = HashMap<String, Any>()
+            val steps = mutableListOf<Any>()
+            for (s in path.steps) {
+                steps.add(toJson(s))
+            }
+            data.put("steps", steps)
+            data.put("strategy", path.strategy)
+            return data
+        }
+
+        fun toJson(step: DriveStep): Any {
+            val data = HashMap<String, Any>()
+            data.put("polyline", polylineToJson(step.polyline))
+            data.put("distance", step.distance)
+            data.put("duration", step.duration)
             return data
         }
 
@@ -354,6 +444,13 @@ class Convert {
             return o as HashMap<String, Any>
         }
 
+        fun toList(o: Any): List<Any> {
+            return o as List<Any>
+        }
+
+        fun toInt(o: Any): Int {
+            return (o as Number).toInt()
+        }
     }
 
 }

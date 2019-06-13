@@ -18,7 +18,6 @@ import java.util.concurrent.atomic.AtomicInteger
 import com.amap.api.maps.AMap
 import com.amap.api.maps.TextureMapView
 import com.amap.api.maps.model.*
-import com.amap.api.services.geocoder.*
 import com.laoqiu.amap_view.AmapViewPlugin.Companion.CREATED
 import com.laoqiu.amap_view.AmapViewPlugin.Companion.DESTROYED
 import com.laoqiu.amap_view.AmapViewPlugin.Companion.PAUSED
@@ -26,6 +25,7 @@ import com.laoqiu.amap_view.AmapViewPlugin.Companion.RESUMED
 import com.laoqiu.amap_view.AmapViewPlugin.Companion.STOPPED
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
+import com.amap.api.maps.model.LatLng
 
 
 class AmapFactory(private val activityState: AtomicInteger, private val registrar: Registrar)
@@ -80,6 +80,7 @@ class AMapView(context: Context,
     private var disposed = false
     private val registrarActivityHashCode: Int
     private var markerController: MarkerController
+    private val polylineController: PolylineController
 
     init {
         map = mapView.getMap()
@@ -93,6 +94,9 @@ class AMapView(context: Context,
 
         // marker控制器
         markerController = MarkerController(methodChannel, mapView.map)
+
+        // polyline控制器
+        polylineController = PolylineController(methodChannel, mapView.map)
     }
 
     fun setup() {
@@ -140,6 +144,16 @@ class AMapView(context: Context,
                 markerController.removeMarkers(markerIdsToRemove as List<Any>)
                 result.success(null)
             }
+            "polylines#update" -> {
+                var polylinesToAdd: Any? = call.argument("polylinesToAdd")
+                var polylinesToChange: Any? = call.argument("polylinesToChange")
+                var polylineIdsToRemove: Any? = call.argument("polylineIdsToRemove")
+                // controller process
+                polylineController.addPolylines(polylinesToAdd as List<Any>)
+                polylineController.changePolylines(polylinesToChange as List<Any>)
+                polylineController.removePolylines(polylineIdsToRemove as List<Any>)
+                result.success(null)
+            }
             "camera#update" -> {
                 // TODO: 更新地图状态处理
                 result.success(null)
@@ -172,6 +186,7 @@ class AMapView(context: Context,
         }
         // 初始化markers
         updateInitialMarkers()
+
     }
 
     override fun getView(): View {

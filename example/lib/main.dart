@@ -16,6 +16,7 @@ class _MyAppState extends State<MyApp> {
 
   AMapController mapController;
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+  Map<PolylineId, Polyline> polylines = <PolylineId, Polyline>{};
   int _markerIdCounter = 1;
   ImageConfiguration imageConfiguration;
   LatLng center = LatLng(30.337875, 120.111339);
@@ -64,6 +65,19 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  void _addPolyline() async {
+    final PolylineId polylineId = PolylineId('polyline_01');
+    setState(() {
+      polylines[polylineId] = Polyline(
+          polylineId: polylineId,
+          points: <LatLng>[
+            LatLng(30.330511, 120.122398),
+            LatLng(30.352437, 120.212005)
+          ]
+      );
+    });
+  }
+
   void _clearMarker() {
     setState(() {
       markers = {};
@@ -73,6 +87,26 @@ class _MyAppState extends State<MyApp> {
   Future<void> _routeNavi() async {
     await AmapNavi.showRoute(
         RouteNavi(end: Poi("下一站", LatLng(30.426789, 120.264577), "")));
+  }
+  
+  Future<void> _searchRoute() async {
+    var result = await AmapSearch.route(RouteParams(
+        start: LatLng(30.330511, 120.122398),
+        end: LatLng(30.352437, 120.212005)
+    ));
+    // print(result);
+    var routes = result[0]["steps"].map((i)=> i["polyline"].map((p)=> LatLng(p["latitude"], p["longitude"]) ).toList()).toList();
+    setState(() {
+      for (var i=0; i<routes.length; i++) {
+        var polylineId = PolylineId('polyline_$i');
+        polylines[polylineId] = Polyline(
+          polylineId: polylineId,
+          width: 20,
+          points: List<LatLng>.from(routes[i]),
+        );
+      }
+    });
+
   }
 
   void _onMapCreated(AMapController controller) {
@@ -93,9 +127,10 @@ class _MyAppState extends State<MyApp> {
               height: 200,
               child: AmapView(
                 initialCameraPosition: CameraPosition(target: center, zoom: 13),
-                myLocationEnabled: true,
+                //myLocationEnabled: true,
                 scaleControlsEnabled: false,
-                markers: Set<Marker>.of(markers.values),
+                //markers: Set<Marker>.of(markers.values),
+                polylines: Set<Polyline>.of(polylines.values),
                 onCameraMove: (pos) {
                   print("onCameraMove ${pos.target}");
                   setState(() {
@@ -121,19 +156,25 @@ class _MyAppState extends State<MyApp> {
                 RaisedButton(
                   child: Text("添加"),
                   onPressed: () {
-                    _addMarker();
+                    _addPolyline();
                   },
                 ),
-                RaisedButton(
-                  child: Text("清除所有"),
-                  onPressed: () {
-                    _clearMarker();
-                  },
-                ),
+//                RaisedButton(
+//                  child: Text("清除所有"),
+//                  onPressed: () {
+//                    _clearMarker();
+//                  },
+//                ),
                 RaisedButton(
                   child: Text("导航"),
                   onPressed: () {
                     _routeNavi();
+                  },
+                ),
+                RaisedButton(
+                  child: Text("行车路径规则"),
+                  onPressed: () {
+                    _searchRoute();
                   },
                 ),
               ],
