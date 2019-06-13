@@ -10,12 +10,35 @@ class AmapSearch {
     return await _channel.invokeMethod('search#reGeocode', params.toMap());
   }
 
+  /// 地理编码转换
+  static Future<dynamic> geocode(GeocodeParams params) async {
+    assert(params != null);
+    return await _channel.invokeMethod('search#geocode', params.toMap());
+  }
+
   /// 行车路径规划
   static Future<dynamic> route(RouteParams params) async {
     assert(params != null);
     return await _channel.invokeMethod('search#route', params.toMap());
   }
 
+}
+
+class GeocodeParams {
+  GeocodeParams({@required this.address, this.city});
+
+  final String address;
+  final String city;
+
+  Map<String, dynamic> toMap() {
+    return {
+      "address": address,
+      "city": city,
+    };
+  }
+
+  @override
+  String toString() => '$runtimeType($address, $city)';
 }
 
 class ReGeocodeParams {
