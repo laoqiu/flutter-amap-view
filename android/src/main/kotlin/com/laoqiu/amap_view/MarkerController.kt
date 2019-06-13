@@ -34,6 +34,7 @@ class MarkerController(private val methodChannel: MethodChannel, private val map
         var oldOptions = markerIdToOptions[markerId]
         if (marker != null && oldOptions != null) {
             Convert.interpretMarkerOptions(marker, options, oldOptions)
+            markerIdToOptions[markerId] = options
         }
     }
 

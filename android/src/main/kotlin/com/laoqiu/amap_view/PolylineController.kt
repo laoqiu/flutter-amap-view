@@ -33,6 +33,7 @@ class PolylineController(private val methodChannel: MethodChannel, private val m
         var oldOptions = polylineIdToOptions[polylineId]
         if (polyline != null && oldOptions != null) {
             Convert.interpretPolylineOptions(polyline, options, oldOptions)
+            polylineIdToOptions[polylineId] = options
         }
     }
 

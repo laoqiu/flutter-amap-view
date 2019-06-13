@@ -78,9 +78,10 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  void _clearMarker() {
+  void _clear() {
     setState(() {
       markers = {};
+      polylines = {};
     });
   }
 
@@ -89,14 +90,16 @@ class _MyAppState extends State<MyApp> {
         RouteNavi(end: Poi("下一站", LatLng(30.426789, 120.264577), "")));
   }
   
-  Future<void> _searchRoute() async {
+  Future<void> _searchRoute(LatLng start, LatLng end) async {
     var result = await AmapSearch.route(RouteParams(
-        start: LatLng(30.330511, 120.122398),
-        end: LatLng(30.352437, 120.212005)
+        start: start,
+        end: end,
+        // wayPoints:
     ));
     // print(result);
     var routes = result[0]["steps"].map((i)=> i["polyline"].map((p)=> LatLng(p["latitude"], p["longitude"]) ).toList()).toList();
     setState(() {
+      polylines = {};
       for (var i=0; i<routes.length; i++) {
         var polylineId = PolylineId('polyline_$i');
         polylines[polylineId] = Polyline(
@@ -153,28 +156,34 @@ class _MyAppState extends State<MyApp> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                RaisedButton(
-                  child: Text("添加"),
-                  onPressed: () {
-                    _addPolyline();
-                  },
-                ),
 //                RaisedButton(
-//                  child: Text("清除所有"),
+//                  child: Text("添加"),
 //                  onPressed: () {
-//                    _clearMarker();
+//                    _addPolyline();
 //                  },
 //                ),
                 RaisedButton(
-                  child: Text("导航"),
+                  child: Text("清除"),
                   onPressed: () {
-                    _routeNavi();
+                    _clear();
+                  },
+                ),
+//                RaisedButton(
+//                  child: Text("导航"),
+//                  onPressed: () {
+//                    _routeNavi();
+//                  },
+//                ),
+                RaisedButton(
+                  child: Text("行车路径规则1"),
+                  onPressed: () {
+                    _searchRoute(LatLng(30.330511, 120.122398), LatLng(30.352437, 120.212005));
                   },
                 ),
                 RaisedButton(
-                  child: Text("行车路径规则"),
+                  child: Text("行车路径规则2"),
                   onPressed: () {
-                    _searchRoute();
+                    _searchRoute(LatLng(30.328881, 120.12993), LatLng(30.340067, 120.121518));
                   },
                 ),
               ],
