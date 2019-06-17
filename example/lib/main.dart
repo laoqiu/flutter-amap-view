@@ -44,16 +44,12 @@ class _MyAppState extends State<MyApp> {
     final String markerIdVal = 'marker_$_markerIdCounter';
     _markerIdCounter++;
     final MarkerId markerId = MarkerId(markerIdVal);
-    var markerIcon = await BitmapDescriptor.fromAvatarWithAssetImage(
+    var markerIcon = await BitmapDescriptor.fromAssetImageWithText(
       imageConfiguration,
       "assets/map-point.png",
-      Avatar(
-          url:
-              "https://img5.duitang.com/uploads/item/201512/18/20151218165511_AQW4B.jpeg",
-          size: Size(112, 112),
-          offset: Offset(4, 4),
-          radius: 56),
+      Label(text: "$_markerIdCounter", size: 48, offset: Offset(-1, 10))
     );
+    print(markerIcon.toMap());
     setState(() {
       markers[markerId] = Marker(
         markerId: markerId,
@@ -132,7 +128,7 @@ class _MyAppState extends State<MyApp> {
                 initialCameraPosition: CameraPosition(target: center, zoom: 13),
                 //myLocationEnabled: true,
                 scaleControlsEnabled: false,
-                //markers: Set<Marker>.of(markers.values),
+                markers: Set<Marker>.of(markers.values),
                 polylines: Set<Polyline>.of(polylines.values),
                 onCameraMove: (pos) {
                   print("onCameraMove ${pos.target}");
@@ -156,12 +152,12 @@ class _MyAppState extends State<MyApp> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-//                RaisedButton(
-//                  child: Text("添加"),
-//                  onPressed: () {
-//                    _addPolyline();
-//                  },
-//                ),
+                RaisedButton(
+                  child: Text("添加"),
+                  onPressed: () {
+                    _addMarker();
+                  },
+                ),
                 RaisedButton(
                   child: Text("清除"),
                   onPressed: () {
@@ -174,18 +170,18 @@ class _MyAppState extends State<MyApp> {
 //                    _routeNavi();
 //                  },
 //                ),
-                RaisedButton(
-                  child: Text("行车路径规则1"),
-                  onPressed: () {
-                    _searchRoute(LatLng(30.330511, 120.122398), LatLng(30.352437, 120.212005));
-                  },
-                ),
-                RaisedButton(
-                  child: Text("行车路径规则2"),
-                  onPressed: () {
-                    _searchRoute(LatLng(30.328881, 120.12993), LatLng(30.340067, 120.121518));
-                  },
-                ),
+//                RaisedButton(
+//                  child: Text("行车路径规则1"),
+//                  onPressed: () {
+//                    _searchRoute(LatLng(30.330511, 120.122398), LatLng(30.352437, 120.212005));
+//                  },
+//                ),
+//                RaisedButton(
+//                  child: Text("行车路径规则2"),
+//                  onPressed: () {
+//                    _searchRoute(LatLng(30.328881, 120.12993), LatLng(30.340067, 120.121518));
+//                  },
+//                ),
               ],
             ),
           ],

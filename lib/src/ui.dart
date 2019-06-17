@@ -94,3 +94,34 @@ class Avatar {
     return _data;
   }
 }
+
+class Label {
+  Label({
+    @required this.text,
+    this.size = 22.0,
+    this.color = Colors.blue,
+    this.offset = const Offset(0, 0)
+  }) : assert(text != null);
+
+  final String text;
+  final double size;
+  final Color color;
+  final Offset offset;
+
+  Map<String, dynamic> toMap() {
+    final Map<String, dynamic> _data = <String, dynamic>{};
+
+    void addIfPresent(String fieldName, dynamic value) {
+      if (value != null) {
+        _data[fieldName] = value;
+      }
+    }
+
+    addIfPresent("text", text);
+    addIfPresent("offset", [offset.dx, offset.dy]);
+    addIfPresent("size", size);
+    addIfPresent("color", color.value);
+
+    return _data;
+  }
+}

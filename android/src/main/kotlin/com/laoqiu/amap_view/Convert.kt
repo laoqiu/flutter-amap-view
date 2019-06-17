@@ -18,13 +18,20 @@ import com.amap.api.services.route.DriveStep
 import java.io.IOException
 import java.io.InputStream
 import java.net.URL
+import android.text.TextPaint
+import android.R.attr.bitmap
+import android.opengl.ETC1.getWidth
+
+
+
+
 
 
 // Gson扩展方法
 inline fun <reified T> Gson.fromJson(json: String) = fromJson(json, T::class.java)
 
 
-class AsyncTaskLoadImage(
+class AsyncTaskLoadAvatar(
         private val marker: Marker,
         private val visible: Boolean,
         private val width: Int = 120,
@@ -60,6 +67,20 @@ class AsyncTaskLoadImage(
         return bitmap
     }
 
+}
+
+fun drawTextToBitmap(bmp: Bitmap, text: String, size: Float, color: Int, scale: Float, offsetX: Float = 0f, offsetY: Float = 0f): Bitmap {
+    var bitmap = bmp.copy(Bitmap.Config.ARGB_8888, true)
+    var canvas = Canvas(bitmap)
+    var paint = Paint(Paint.ANTI_ALIAS_FLAG)
+    paint.textSize = size
+    paint.color = Color.RED
+    val bounds = Rect()
+    paint.getTextBounds(text, 0, text.length, bounds)
+    val x = (bitmap.width - bounds.width()) / 2 + offsetX
+    val y = bounds.height() + offsetY
+    canvas.drawText(text, x, y, paint)
+    return bitmap
 }
 
 
@@ -190,6 +211,23 @@ class Convert {
                                 "'fromAssetImage' Expected exactly 3 arguments, got: " + data.size);
                     }
                 }
+                "fromAssetImageWithText" -> {
+                    if (data.size == 4) {
+                        icon = BitmapDescriptorFactory.fromAsset(
+                                FlutterMain.getLookupKeyForAsset(toString(data[1])))
+                        var scale = data[2] as Double
+                        var label = data[3] as Map<String, Any>
+                        var text = label.get("text") as String
+                        var size = label.get("size") as Double
+                        var color = label.get("color") as Number
+                        var offset = label.get("offset") as List<Float>
+                        var bitmap = drawTextToBitmap(icon.bitmap, text, size.toFloat(), color.toInt(), scale.toFloat(), offset[0], offset[1])
+                        marker.setIcon(BitmapDescriptorFactory.fromBitmap(bitmap))
+                    } else {
+                        throw IllegalArgumentException(
+                                "'fromAssetImage' Expected exactly 3 arguments, got: " + data.size);
+                    }
+                }
                 "fromAvatarWithAssetImage" -> {
                     if (data.size == 4) {
                         // 网络图片的marker，等图片加载完成才显示
@@ -201,7 +239,7 @@ class Convert {
                         var url = avatar.get("url") as String
                         var size = avatar.get("size") as List<Int>
                         var offset = avatar.get("offset") as List<Float>
-                        AsyncTaskLoadImage(marker, visible, size[0], size[1], offset[0], offset[1], icon.bitmap).execute(url)
+                        AsyncTaskLoadAvatar(marker, visible, size[0], size[1], offset[0], offset[1], icon.bitmap).execute(url)
                     } else {
                         throw IllegalArgumentException(
                                 "'fromAvatarWithAssetImage' Expected exactly 4 arguments, got: " + data.size);
