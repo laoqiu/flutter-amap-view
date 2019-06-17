@@ -47,7 +47,7 @@ class _MyAppState extends State<MyApp> {
     var markerIcon = await BitmapDescriptor.fromAssetImageWithText(
       imageConfiguration,
       "assets/map-point.png",
-      Label(text: "$_markerIdCounter", size: 48, offset: Offset(-1, 10))
+      Label(text: "$_markerIdCounter", size: 48, color: Colors.black, offset: Offset(-1, 10))
     );
     print(markerIcon.toMap());
     setState(() {

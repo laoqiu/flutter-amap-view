@@ -69,12 +69,13 @@ class AsyncTaskLoadAvatar(
 
 }
 
-fun drawTextToBitmap(bmp: Bitmap, text: String, size: Float, color: Int, scale: Float, offsetX: Float = 0f, offsetY: Float = 0f): Bitmap {
+fun drawTextToBitmap(bmp: Bitmap, text: String, size: Float, color: List<Int>, scale: Float, offsetX: Float = 0f, offsetY: Float = 0f): Bitmap {
     var bitmap = bmp.copy(Bitmap.Config.ARGB_8888, true)
     var canvas = Canvas(bitmap)
     var paint = Paint(Paint.ANTI_ALIAS_FLAG)
     paint.textSize = size
-    paint.color = Color.RED
+    paint.color = Color.rgb(color[0], color[1], color[2])
+    paint.setShadowLayer(1f, 0f, 1f, Color.WHITE)
     val bounds = Rect()
     paint.getTextBounds(text, 0, text.length, bounds)
     val x = (bitmap.width - bounds.width()) / 2 + offsetX
@@ -219,9 +220,9 @@ class Convert {
                         var label = data[3] as Map<String, Any>
                         var text = label.get("text") as String
                         var size = label.get("size") as Double
-                        var color = label.get("color") as Number
+                        var color = label.get("color") as List<Int>
                         var offset = label.get("offset") as List<Float>
-                        var bitmap = drawTextToBitmap(icon.bitmap, text, size.toFloat(), color.toInt(), scale.toFloat(), offset[0], offset[1])
+                        var bitmap = drawTextToBitmap(icon.bitmap, text, size.toFloat(), color, scale.toFloat(), offset[0], offset[1])
                         marker.setIcon(BitmapDescriptorFactory.fromBitmap(bitmap))
                     } else {
                         throw IllegalArgumentException(

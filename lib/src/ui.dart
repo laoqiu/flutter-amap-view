@@ -120,7 +120,8 @@ class Label {
     addIfPresent("text", text);
     addIfPresent("offset", [offset.dx, offset.dy]);
     addIfPresent("size", size);
-    addIfPresent("color", color.value);
+    // addIfPresent("color", color.value);
+    addIfPresent("color", [color.value >> 16 & 0xFF, color.value >> 8 & 0xFF, color.value & 0xFF]);
 
     return _data;
   }
