@@ -3,10 +3,7 @@ package com.laoqiu.amap_view
 import android.Manifest
 import android.util.Log
 import androidx.core.app.ActivityCompat
-import com.amap.api.location.AMapLocation
-import com.amap.api.location.AMapLocationClient
-import com.amap.api.location.AMapLocationClientOption
-import com.amap.api.location.AMapLocationListener
+import com.amap.api.location.*
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -69,6 +66,22 @@ class AmapLocationFactory(private val registrar: PluginRegistry.Registrar) :
                 // Log.d("location", "stop")
                 locationClient.stopLocation()
                 result.success(null)
+            }
+            "location#convert" -> {
+                var lat = call.argument<Double>("latitude")
+                var lng = call.argument<Double>("longitude")
+                var coordType = call.argument<Int>("coordType") ?: 0
+                if (lat != null && lng != null) {
+                    var point = CoordinateConverter(registrar.activity()).from(when(coordType){
+                        1 -> CoordinateConverter.CoordType.BAIDU
+                        2 -> CoordinateConverter.CoordType.GOOGLE
+                        else -> CoordinateConverter.CoordType.GPS
+                    }).coord(DPoint(lat, lng)).convert()
+                    result.success(Convert.toJson(point))
+                } else {
+                    result.success(null)
+                }
+
             }
             else -> result.notImplemented()
         }

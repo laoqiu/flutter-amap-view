@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Bitmap
 import android.os.AsyncTask
 import android.util.Log
+import com.amap.api.location.DPoint
 import com.amap.api.services.geocoder.GeocodeAddress
 import com.amap.api.services.route.DrivePath
 import com.amap.api.services.route.DriveStep
@@ -456,6 +457,13 @@ class Convert {
             data.put("polyline", polylineToJson(step.polyline))
             data.put("distance", step.distance)
             data.put("duration", step.duration)
+            return data
+        }
+
+        fun toJson(point: DPoint): Any {
+            val data = HashMap<String, Any>()
+            data.put("latitude", point.latitude)
+            data.put("longitude", point.longitude)
             return data
         }
 

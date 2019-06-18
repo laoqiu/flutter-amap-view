@@ -12,6 +12,11 @@ class AmapLocation {
     await _channel.invokeMethod('location#stop');
   }
 
+  static Future<void> convert(ConvertParms params) async {
+    await _channel.invokeMethod('location#convert', params.toMap());
+  }
+
+
   static void listen(Function callback) {
     _event.receiveBroadcastStream().listen(callback);
   }
@@ -104,3 +109,25 @@ class Poi {
 
 }
 
+class ConvertParms {
+  ConvertParms({this.latitude, this.longitude, this.coordType = 0});
+
+  final double latitude;
+  final double longitude;
+  final int coordType;
+
+  Map<String, dynamic> toMap() {
+    final Map<String, dynamic> _data = <String, dynamic>{};
+    void addIfPresent(String fieldName, dynamic value) {
+      if (value != null) {
+        _data[fieldName] = value;
+      }
+    }
+
+    addIfPresent("latitude", latitude);
+    addIfPresent("longitude", longitude);
+    addIfPresent("coordType", coordType);
+
+    return _data;
+  }
+}
