@@ -28,9 +28,9 @@ class _MyAppState extends State<MyApp> {
     imageConfiguration = createLocalImageConfiguration(context);
     setState(() {
       markers[centerMarkerId] =
-          Marker(markerId: centerMarkerId, position: center);
+          Marker(markerId: centerMarkerId, position: center, infoWindow: InfoWindow(title: "中心"));
     });
-    initPlatformState();
+    // initPlatformState();
   }
 
   Future<void> initPlatformState() async {
@@ -47,7 +47,7 @@ class _MyAppState extends State<MyApp> {
     var markerIcon = await BitmapDescriptor.fromAssetImageWithText(
       imageConfiguration,
       "assets/map-point.png",
-      Label(text: "$_markerIdCounter", size: 48, color: Colors.black, offset: Offset(-1, 10))
+      Label(text: "$_markerIdCounter", size: 48, color: Colors.red, offset: Offset(-1, 10)),
     );
     print(markerIcon.toMap());
     setState(() {
@@ -57,6 +57,7 @@ class _MyAppState extends State<MyApp> {
         position: LatLng(
             center.latitude + sin(_markerIdCounter * pi / 6.0) / 20.0,
             center.longitude + sin(_markerIdCounter * pi / 6.0) / 20.0),
+        infoWindow: InfoWindow(title: 'test', snippet: "hahahkwg")
       );
     });
   }

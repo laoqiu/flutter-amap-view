@@ -218,6 +218,11 @@ class AMapView(context: Context,
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {
+        if (marker.isInfoWindowShown) {
+            marker.hideInfoWindow()
+        } else {
+            marker.showInfoWindow()
+        }
         return markerController.onMarkerTap(marker.id)
     }
 

@@ -18,14 +18,6 @@ import com.amap.api.services.route.DriveStep
 import java.io.IOException
 import java.io.InputStream
 import java.net.URL
-import android.text.TextPaint
-import android.R.attr.bitmap
-import android.opengl.ETC1.getWidth
-
-
-
-
-
 
 // Gson扩展方法
 inline fun <reified T> Gson.fromJson(json: String) = fromJson(json, T::class.java)

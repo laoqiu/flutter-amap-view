@@ -111,6 +111,7 @@ class Marker {
     this.flat = false,
     this.icon = BitmapDescriptor.defaultMarker,
     this.infoWindow = InfoWindow.noText,
+    this.infoWindowEnable = true,
     this.position = const LatLng(0.0, 0.0),
     this.rotation = 0.0,
     this.visible = true,
@@ -148,6 +149,9 @@ class Marker {
 
   /// 设置[Marker]覆盖物的[InfoWindow]
   final InfoWindow infoWindow;
+
+  /// 设置[Marker]是否显示[InfoWindow]，默认显示
+  final bool infoWindowEnable;
 
   final VoidCallback onTap;
 
@@ -197,6 +201,7 @@ class Marker {
     addIfPresent('rotation', rotation);
     addIfPresent('icon', icon?.toMap());
     addIfPresent('infoWindow', infoWindow?.toMap());
+    addIfPresent('infoWindowEnable', infoWindowEnable);
     addIfPresent('position', position?.toMap());
     addIfPresent('visible', visible);
     addIfPresent('zIndex', zIndex);

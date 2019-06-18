@@ -57,6 +57,7 @@ class UnifiedMarkerOptions(
         val visible: Boolean = true,
         val flat: Boolean = false,
         val draggable: Boolean = true,
+        var infoWindowEnable: Boolean = true,
         val zIndex: Float = 1.0f,
         val rotation: Float = 0.0f,
         val infoWindow: Map<String, Any>) {
@@ -71,7 +72,7 @@ class UnifiedMarkerOptions(
                 .zIndex(zIndex)
                 .rotateAngle(rotation)
                 .draggable(draggable)
-
+                .infoWindowEnable(infoWindowEnable)
         if (infoWindow["title"] != null) {
             opts.title(infoWindow["title"] as String)
         }
