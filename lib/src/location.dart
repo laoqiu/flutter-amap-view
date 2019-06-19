@@ -13,7 +13,7 @@ class AmapLocation {
   }
 
   static Future<dynamic> convert(ConvertParms params) async {
-    await _channel.invokeMethod('location#convert', params.toMap());
+    return await _channel.invokeMethod('location#convert', params.toMap());
   }
 
 
