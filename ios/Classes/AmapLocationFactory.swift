@@ -66,9 +66,13 @@ class AmapLocationFactory: NSObject, AMapLocationManagerDelegate, FlutterStreamH
     }
     
     func amapLocationManager(_ manager: AMapLocationManager!, didUpdate location: CLLocation!, reGeocode: AMapLocationReGeocode!) {
-        // location.verticalAccuracy
-        let dataMap: Dictionary<String, Any> = ["speed": location.speed ,"altitude": location.altitude, "latitude": location.coordinate.latitude, "longitude": location.coordinate.longitude, "address": reGeocode.formattedAddress]
-        eventSink?(dataMap)
+        if location != nil {
+            var dataMap: Dictionary<String, Any> = ["speed": location.speed ,"altitude": location.altitude, "latitude": location.coordinate.latitude, "longitude": location.coordinate.longitude]
+            if (reGeocode != nil) {
+                dataMap["address"] = reGeocode.formattedAddress
+            }
+            eventSink?(dataMap)
+        }
     }
     
     func amapLocationManager(_ manager: AMapLocationManager!, doRequireLocationAuth locationManager: CLLocationManager!) {

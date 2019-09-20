@@ -30,7 +30,7 @@ class _MyAppState extends State<MyApp> {
       markers[centerMarkerId] =
           Marker(markerId: centerMarkerId, position: center, infoWindow: InfoWindow(title: "中心"));
     });
-    // initPlatformState();
+    initPlatformState();
   }
 
   Future<void> initPlatformState() async {
