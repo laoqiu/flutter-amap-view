@@ -86,6 +86,11 @@ class _MyAppState extends State<MyApp> {
     await AmapNavi.showRoute(
         RouteNavi(end: Poi("下一站", LatLng(30.426789, 120.264577), "")));
   }
+
+  Future<void> _geocode() async {
+    var result = await AmapSearch.geocode(GeocodeParams(address: "北京市海淀区北京大学口腔医院"));
+    print(result);
+  }
   
   Future<void> _searchRoute(LatLng start, LatLng end) async {
     var result = await AmapSearch.route(RouteParams(
@@ -169,6 +174,12 @@ class _MyAppState extends State<MyApp> {
                  child: Text("导航"),
                  onPressed: () {
                    _routeNavi();
+                 },
+               ),
+               RaisedButton(
+                 child: Text("转经纬度"),
+                 onPressed: () {
+                   _geocode();
                  },
                ),
 //                RaisedButton(

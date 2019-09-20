@@ -27,12 +27,12 @@ class AmapSearchFactory: NSObject, AMapSearchDelegate {
     }
     
     func onMethodCall(methodCall: FlutterMethodCall, result: @escaping FlutterResult) {
-        switch methodCall.method {
+        switch (methodCall.method) {
         case "search#geocode":
-            if let args = methodCall.arguments as? [String: String] {
+            if let args = methodCall.arguments as? [String: Any] {
                 let req = AMapGeocodeSearchRequest()
-                req.address = args["address"]
-                req.city = args["city"]
+                req.address = args["address"] as? String
+                req.city = args["city"] as? String
                 search.aMapGeocodeSearch(req)
                 self.result = result
             } else {
