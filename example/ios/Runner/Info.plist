@@ -51,6 +51,8 @@
 		<string>fetch</string>
 		<string>remote-notification</string>
 	</array>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>允许访问用户位置</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>允许访问用户位置</string>
 	<key>io.flutter.embedded_views_preview</key>

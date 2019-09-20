@@ -71,6 +71,10 @@ class AmapLocationFactory: NSObject, AMapLocationManagerDelegate, FlutterStreamH
         eventSink?(dataMap)
     }
     
+    func amapLocationManager(_ manager: AMapLocationManager!, doRequireLocationAuth locationManager: CLLocationManager!) {
+        locationManager.requestAlwaysAuthorization()
+    }
+    
     func getCoordType(t: Int?) -> AMapCoordinateType {
         var coordType: AMapCoordinateType
         switch t {
