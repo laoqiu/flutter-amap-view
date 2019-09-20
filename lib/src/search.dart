@@ -21,7 +21,6 @@ class AmapSearch {
     assert(params != null);
     return await _channel.invokeMethod('search#route', params.toMap());
   }
-
 }
 
 class GeocodeParams {

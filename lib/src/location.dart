@@ -16,7 +16,6 @@ class AmapLocation {
     return await _channel.invokeMethod('location#convert', params.toMap());
   }
 
-
   static void listen(Function callback) {
     _event.receiveBroadcastStream().listen(callback);
   }
@@ -110,11 +109,11 @@ class Poi {
 }
 
 class ConvertParms {
-  ConvertParms({this.latitude, this.longitude, this.coordType = 0});
+  ConvertParms({this.latitude, this.longitude, this.coordType = CoordType.baidu});
 
   final double latitude;
   final double longitude;
-  final int coordType;
+  final CoordType coordType;
 
   Map<String, dynamic> toMap() {
     final Map<String, dynamic> _data = <String, dynamic>{};
@@ -126,7 +125,7 @@ class ConvertParms {
 
     addIfPresent("latitude", latitude);
     addIfPresent("longitude", longitude);
-    addIfPresent("coordType", coordType);
+    addIfPresent("coordType", coordType.index);
 
     return _data;
   }
