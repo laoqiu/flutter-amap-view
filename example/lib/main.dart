@@ -165,12 +165,12 @@ class _MyAppState extends State<MyApp> {
                     _clear();
                   },
                 ),
-//                RaisedButton(
-//                  child: Text("导航"),
-//                  onPressed: () {
-//                    _routeNavi();
-//                  },
-//                ),
+               RaisedButton(
+                 child: Text("导航"),
+                 onPressed: () {
+                   _routeNavi();
+                 },
+               ),
 //                RaisedButton(
 //                  child: Text("行车路径规则1"),
 //                  onPressed: () {

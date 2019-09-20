@@ -49,6 +49,9 @@ class AmapViewController: NSObject, FlutterPlatformView, MAMapViewDelegate, Amap
             Convert.interpretMapOptions(options: args["options"], delegate: self)
             updateInitialMarkers(options: args["markersToAdd"])
         }
+        
+        // 加载其他组件
+        AmapNavFactory(withMessenger: messenger).register()
     }
     
     func view() -> UIView {
@@ -78,8 +81,6 @@ class AmapViewController: NSObject, FlutterPlatformView, MAMapViewDelegate, Amap
             }
             result(nil)
         case "camera#update":
-            result(nil)
-        case "map#navi":
             result(nil)
         default:
             result(FlutterMethodNotImplemented)
