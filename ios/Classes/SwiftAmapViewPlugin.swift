@@ -17,6 +17,7 @@ public class SwiftAmapViewPlugin: NSObject, FlutterPlugin {
     let instance = AmapViewFactory(withMessenger: registrar.messenger())
     registrar.register(instance, withId: "plugins.laoqiu.com/amap_view")
     
+    // 其他组件初始化
     AmapLocationFactory(withMessenger: registrar.messenger()).register()
     AmapNavFactory(withMessenger: registrar.messenger()).register()
     AmapSearchFactory(withMessenger: registrar.messenger()).register()

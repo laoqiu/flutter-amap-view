@@ -10,8 +10,7 @@ import AMapNaviKit
 
 
 class AmapNavFactory: NSObject, AMapNaviCompositeManagerDelegate {
-    var messenger: FlutterBinaryMessenger
-    
+    private var messenger: FlutterBinaryMessenger
     private var compositeManager: AMapNaviCompositeManager!
     
     init(withMessenger messenger: FlutterBinaryMessenger) {
@@ -23,7 +22,7 @@ class AmapNavFactory: NSObject, AMapNaviCompositeManagerDelegate {
         let channel = FlutterMethodChannel(name: "plugins.laoqiu.com/amap_view_navi", binaryMessenger:messenger)
         channel.setMethodCallHandler(onMethodCall)
     }
-    
+
     func onMethodCall(methodCall: FlutterMethodCall, result: @escaping FlutterResult) {
         switch (methodCall.method) {
         case "navi#showRoute":

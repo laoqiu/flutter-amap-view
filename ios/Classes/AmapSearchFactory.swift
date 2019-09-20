@@ -6,13 +6,19 @@
 //
 
 import Foundation
+import AMapSearchKit
 
-class AmapSearchFactory: NSObject {
-    var messenger: FlutterBinaryMessenger
+class AmapSearchFactory: NSObject, AMapSearchDelegate {
+    private var messenger: FlutterBinaryMessenger
+    private var search: AMapSearchAPI
+    private var result: FlutterResult?
     
     init(withMessenger messenger: FlutterBinaryMessenger) {
         self.messenger = messenger
+        search = AMapSearchAPI()
         super.init()
+        
+        search.delegate = self
     }
     
     func register() {
@@ -23,9 +29,26 @@ class AmapSearchFactory: NSObject {
     func onMethodCall(methodCall: FlutterMethodCall, result: @escaping FlutterResult) {
         switch methodCall.method {
         case "search#geocode":
-            result(nil)
+            if let args = methodCall.arguments as? [String: String] {
+                let req = AMapGeocodeSearchRequest()
+                req.address = args["address"]
+                req.city = args["city"]
+                search.aMapGeocodeSearch(req)
+                self.result = result
+            } else {
+                result(nil)
+            }
         default:
             result(FlutterMethodNotImplemented)
+        }
+    }
+    
+    func onGeocodeSearchDone(_ request: AMapGeocodeSearchRequest!, response: AMapGeocodeSearchResponse!) {
+        if response.geocodes.count > 0 {
+            let data: Dictionary<String, Any> = ["latitude": response.geocodes[0].location.latitude, "longitude": response.geocodes[0].location.longitude]
+            result!(data)
+        } else {
+            result!(nil)
         }
     }
 }

@@ -7,21 +7,31 @@
 
 import Foundation
 import AMapFoundationKit
+import AMapLocationKit
 
 
-class AmapLocationFactory: NSObject {
-    var messenger: FlutterBinaryMessenger
+class AmapLocationFactory: NSObject, AMapLocationManagerDelegate, FlutterStreamHandler {
+    private var messenger: FlutterBinaryMessenger
+    private var locationManager: AMapLocationManager
+    private var eventSink: FlutterEventSink?
     
     init(withMessenger messenger: FlutterBinaryMessenger) {
         self.messenger = messenger
+        locationManager = AMapLocationManager()
         super.init()
+        
+        locationManager.distanceFilter = 200
+        locationManager.delegate = self
     }
     
     func register() {
         let channel = FlutterMethodChannel(name: "plugins.laoqiu.com/amap_view_location", binaryMessenger:messenger)
         channel.setMethodCallHandler(onMethodCall)
+        
+        let event = FlutterEventChannel(name: "plugins.laoqiu.com/amap_view_location_event", binaryMessenger: messenger)
+        event.setStreamHandler(self)
     }
-    
+
     func onMethodCall(methodCall: FlutterMethodCall, result: @escaping FlutterResult) {
         switch methodCall.method {
         case "location#convert":
@@ -34,11 +44,33 @@ class AmapLocationFactory: NSObject {
             } else {
                 result(nil)
             }
+        case "location#start":
+            locationManager.locatingWithReGeocode = true
+            locationManager.startUpdatingLocation()
+            result(nil)
+        case "location#stop":
+            locationManager.stopUpdatingLocation()
+            result(nil)
         default:
             result(FlutterMethodNotImplemented)
         }
-        
     }
+    
+    func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
+        eventSink = events
+        return nil
+    }
+    
+    func onCancel(withArguments arguments: Any?) -> FlutterError? {
+        return nil
+    }
+    
+    func amapLocationManager(_ manager: AMapLocationManager!, didUpdate location: CLLocation!, reGeocode: AMapLocationReGeocode!) {
+        // location.verticalAccuracy
+        let dataMap: Dictionary<String, Any> = ["speed": location.speed ,"altitude": location.altitude, "latitude": location.coordinate.latitude, "longitude": location.coordinate.longitude, "address": reGeocode.formattedAddress]
+        eventSink?(dataMap)
+    }
+    
     func getCoordType(t: Int?) -> AMapCoordinateType {
         var coordType: AMapCoordinateType
         switch t {
@@ -59,4 +91,5 @@ class AmapLocationFactory: NSObject {
         }
         return coordType
     }
+    
 }
