@@ -94,13 +94,6 @@ class CameraUpdate {
     );
   }
 
-  /// 按像素移动地图中心点
-  static CameraUpdate scrollBy(double dx, double dy) {
-    return CameraUpdate._(
-      <dynamic>['scrollBy', dx, dy],
-    );
-  }
-
   /// 根据给定增量缩放地图级别，在当前地图显示的级别基础上加上这个增量
   static CameraUpdate zoomBy(double amount, [Offset focus]) {
     if (focus == null) {

@@ -13,12 +13,20 @@ import android.graphics.Bitmap
 import android.os.AsyncTask
 import android.util.Log
 import com.amap.api.location.DPoint
+import com.amap.api.maps.CameraUpdate
+import com.amap.api.maps.CameraUpdateFactory
 import com.amap.api.services.geocoder.GeocodeAddress
 import com.amap.api.services.route.DrivePath
 import com.amap.api.services.route.DriveStep
 import java.io.IOException
 import java.io.InputStream
 import java.net.URL
+import com.amap.api.maps.model.CameraPosition
+import com.amap.api.maps.model.LatLngBounds
+import java.util.Arrays.asList
+import com.amap.api.maps.model.LatLng
+import com.amap.api.services.help.Tip
+
 
 // Gson扩展方法
 inline fun <reified T> Gson.fromJson(json: String) = fromJson(json, T::class.java)
@@ -276,6 +284,42 @@ class Convert {
             return Gson().fromJson<UnifiedPolylineOptions>(Gson().toJson(data))
         }
 
+        fun toCameraUpdate(o: Any?, density: Float): CameraUpdate? {
+            if (o == null) {
+                return null
+            }
+            var data = toList(o)
+            when (toString(data.get(0))) {
+               "newCameraPosition" -> {
+                   return CameraUpdateFactory.newCameraPosition(
+                           toCameraPosition(data.get(1)))
+               }
+                "newLatLng" -> {
+                    return CameraUpdateFactory.newLatLng(toLatLng(data.get(1)))
+                }
+                "newLatLngBounds" -> {
+                    return CameraUpdateFactory.newLatLngBounds(
+                            toLatLngBounds(data.get(1)), toPixels(data.get(2), density))
+                }
+                "newLatLngZoom" -> {
+                    return CameraUpdateFactory.newLatLngZoom(
+                            toLatLng(data.get(1)), toFloat(data.get(2)))
+                }
+                "zoomBy" -> {
+                    return CameraUpdateFactory.zoomBy(toFloat(data.get(1)))
+                }
+                "zoomIn" -> {
+                    return CameraUpdateFactory.zoomIn()
+                }
+                "zoomOut" -> {
+                    return CameraUpdateFactory.zoomOut()
+                }
+                else -> {
+                    return null
+                }
+            }
+        }
+
         fun markerIdToJson(markerId: String): Any {
             var data = hashMapOf<String, Any>(
                     "markerId" to markerId
@@ -288,6 +332,19 @@ class Convert {
                     "polylineId" to polylineId
             )
             return data
+        }
+
+        fun toLatLngBounds(o: Any): LatLngBounds? {
+            if (o == null) {
+                return null
+            }
+            val builder = LatLngBounds.Builder()
+            var data = toList(o)
+            for (i in data) {
+                var d = toLatLng(i)
+                if (d != null) builder.include(d)
+            }
+            return builder.build()
         }
 
         fun toLatLng(o: Any?): LatLng? {
@@ -336,6 +393,15 @@ class Convert {
             return result
         }
 
+        fun toCameraPosition(o: Any): CameraPosition {
+            val data = toMap(o)
+            val builder = CameraPosition.Builder()
+            if (data["bearing"] != null) builder.bearing(toFloat(data["bearing"]!!))
+            if (data["tilt"] != null) builder.tilt(toFloat(data["tilt"]!!))
+            if (data["zoom"] != null) builder.zoom(toFloat(data["zoom"]!!))
+            builder.target(toLatLng(data["target"]))
+            return builder.build()
+        }
 
         fun addressToJson(list: List<GeocodeAddress>): Any {
             val data = mutableListOf<Any>()
@@ -353,6 +419,16 @@ class Convert {
             return data
         }
 
+        fun tipsToJson(list: MutableList<Tip>?): Any {
+            val data = mutableListOf<Any>()
+            if (list != null) {
+                for (tip in list) {
+                    data.add(toJson(tip))
+                }
+            }
+            return data
+        }
+
         fun polylineToJson(list: List<LatLonPoint>): Any {
             val data = mutableListOf<Any>()
             for (point in list) {
@@ -361,11 +437,30 @@ class Convert {
             return data
         }
 
+        fun toFractionalPixels(o: Any, density: Float): Float {
+            return toFloat(o) * density
+        }
+
+        fun toPixels(o: Any, density: Float): Int {
+            return toFractionalPixels(o, density).toInt()
+        }
+
         fun toJson(latLng: LatLng): Any {
             // return Arrays.asList(latLng.latitude, latLng.longitude)
             val data = HashMap<String, Any>()
             data.put("latitude", latLng.latitude)
             data.put("longitude", latLng.longitude)
+            return data
+        }
+
+        fun toJson(tip: Tip): Any {
+            val data = HashMap<String, Any>()
+            data.put("adcode", tip.adcode)
+            data.put("address", tip.address)
+            data.put("district", tip.district)
+            data.put("name", tip.name)
+            data.put("typeCode", tip.typeCode)
+            data.put("point", toJson(tip.point))
             return data
         }
 

@@ -1,6 +1,9 @@
 package com.laoqiu.amap_view
 
 import com.amap.api.services.geocoder.*
+import com.amap.api.services.help.Inputtips
+import com.amap.api.services.help.InputtipsQuery
+import com.amap.api.services.help.Tip
 import com.amap.api.services.route.*
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -104,6 +107,24 @@ class AmapSearchFactory(private val registrar: PluginRegistry.Registrar) :
                     }
                 }
 
+            }
+            "search#inputtips" -> {
+                var keyword = Convert.toString(call.argument("keyword")!!)
+                var city = Convert.toString(call.argument("city")!!)
+                var query: InputtipsQuery = InputtipsQuery(keyword, city);
+                Inputtips(registrar.activity(), query).run {
+                    setInputtipsListener(object: Inputtips.InputtipsListener{
+                        override fun onGetInputtips(tipList: MutableList<Tip>?, code: Int) {
+                            if (code == 0) { // 正确返回
+                                result.success(Convert.tipsToJson(tipList))
+                            } else {
+                                result.success(null)
+                            }
+                        }
+                    })
+                    // 异步执行
+                    requestInputtipsAsyn()
+                }
             }
             else -> result.notImplemented()
         }

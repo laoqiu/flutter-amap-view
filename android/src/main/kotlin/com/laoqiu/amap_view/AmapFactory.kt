@@ -16,6 +16,7 @@ import io.flutter.plugin.platform.PlatformView
 import io.flutter.plugin.platform.PlatformViewFactory
 import java.util.concurrent.atomic.AtomicInteger
 import com.amap.api.maps.AMap
+import com.amap.api.maps.AMapOptions
 import com.amap.api.maps.TextureMapView
 import com.amap.api.maps.model.*
 import com.laoqiu.amap_view.AmapViewPlugin.Companion.CREATED
@@ -81,6 +82,7 @@ class AMapView(context: Context,
     private val registrarActivityHashCode: Int
     private var markerController: MarkerController
     private val polylineController: PolylineController
+    private var density = context.getResources().getDisplayMetrics().density
 
     init {
         map = mapView.getMap()
@@ -154,8 +156,20 @@ class AMapView(context: Context,
                 polylineController.removePolylines(polylineIdsToRemove as List<Any>)
                 result.success(null)
             }
-            "camera#update" -> {
-                // TODO: 更新地图状态处理
+            "camera#move" -> {
+                var cameraUpdate: Any? = call.argument("cameraUpdate")
+                var camera = Convert.toCameraUpdate(cameraUpdate, density)
+                if (camera != null) {
+                    map.moveCamera(camera)
+                }
+                result.success(null)
+            }
+            "camera#animate" -> {
+                var cameraUpdate: Any? = call.argument("cameraUpdate")
+                var camera = Convert.toCameraUpdate(cameraUpdate, density)
+                if (camera != null) {
+                    map.animateCamera(camera)
+                }
                 result.success(null)
             }
 
@@ -182,7 +196,8 @@ class AMapView(context: Context,
             // 设置蓝点类型
             map.setMyLocationStyle(style)
             // 设置是否显示移动按钮
-            map.getUiSettings().setMyLocationButtonEnabled(options.getMyLocationButtonEnabled())
+            map.getUiSettings().setMyLocationButtonEnabled(true)
+            map.getUiSettings().zoomPosition = AMapOptions.ZOOM_POSITION_RIGHT_BUTTOM
         }
         // 初始化markers
         updateInitialMarkers()
