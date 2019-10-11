@@ -114,6 +114,16 @@ class _MyAppState extends State<MyApp> {
 
   }
 
+  Future<void> cameraMove(LatLng loc) async {
+    await mapController.animateCamera(CameraUpdate.newLatLng(loc));
+  }
+
+  Future<dynamic> inputTips(String keyword, String city) async {
+    var result = await AmapSearch.inputTips(keyword, city);
+    print("inputTips-> $result");
+    return result;
+  }
+
   void _onMapCreated(AMapController controller) {
     mapController = controller;
   }
@@ -136,6 +146,7 @@ class _MyAppState extends State<MyApp> {
                 scaleControlsEnabled: false,
                 markers: Set<Marker>.of(markers.values),
                 polylines: Set<Polyline>.of(polylines.values),
+                setMyLocationButtonEnabled: true,
                 onCameraMove: (pos) {
                   print("onCameraMove ${pos.target}");
                   setState(() {
@@ -158,28 +169,34 @@ class _MyAppState extends State<MyApp> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                RaisedButton(
-                  child: Text("添加"),
-                  onPressed: () {
-                    _addMarker();
-                  },
-                ),
-                RaisedButton(
-                  child: Text("清除"),
-                  onPressed: () {
-                    _clear();
-                  },
-                ),
+                // RaisedButton(
+                //   child: Text("添加"),
+                //   onPressed: () {
+                //     _addMarker();
+                //   },
+                // ),
+                // RaisedButton(
+                //   child: Text("清除"),
+                //   onPressed: () {
+                //     _clear();
+                //   },
+                // ),
+              //  RaisedButton(
+              //    child: Text("导航"),
+              //    onPressed: () {
+              //      _routeNavi();
+              //    },
+              //  ),
                RaisedButton(
-                 child: Text("导航"),
+                 child: Text("跳转"),
                  onPressed: () {
-                   _routeNavi();
+                   cameraMove(LatLng(30.330511, 120.122398));
                  },
                ),
                RaisedButton(
-                 child: Text("转经纬度"),
+                 child: Text("搜索"),
                  onPressed: () {
-                   _geocode();
+                   inputTips("医院", "杭州");
                  },
                ),
 //                RaisedButton(

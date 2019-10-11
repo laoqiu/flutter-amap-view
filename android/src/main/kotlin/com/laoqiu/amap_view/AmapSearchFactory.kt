@@ -1,5 +1,6 @@
 package com.laoqiu.amap_view
 
+import android.util.Log
 import com.amap.api.services.geocoder.*
 import com.amap.api.services.help.Inputtips
 import com.amap.api.services.help.InputtipsQuery
@@ -111,11 +112,12 @@ class AmapSearchFactory(private val registrar: PluginRegistry.Registrar) :
             "search#inputtips" -> {
                 var keyword = Convert.toString(call.argument("keyword")!!)
                 var city = Convert.toString(call.argument("city")!!)
-                var query: InputtipsQuery = InputtipsQuery(keyword, city);
+                var query: InputtipsQuery = InputtipsQuery(keyword, city)
+                query.setCityLimit(true) // 限制在当前城市
                 Inputtips(registrar.activity(), query).run {
                     setInputtipsListener(object: Inputtips.InputtipsListener{
                         override fun onGetInputtips(tipList: MutableList<Tip>?, code: Int) {
-                            if (code == 0) { // 正确返回
+                            if (code == 1000) { // 正确返回
                                 result.success(Convert.tipsToJson(tipList))
                             } else {
                                 result.success(null)

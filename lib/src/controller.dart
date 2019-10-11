@@ -66,11 +66,11 @@ class AMapController {
   /// 更新地图视图状态
   Future<void> moveCamera(CameraUpdate cameraUpdate) async {
     assert(cameraUpdate != null);
-    await channel.invokeMethod('camera#move', cameraUpdate.toMap());
+    await channel.invokeMethod('camera#move', {"cameraUpdate": cameraUpdate.toMap()});
   }
 
   Future<void> animateCamera(CameraUpdate cameraUpdate) async {
     assert(cameraUpdate != null);
-    await channel.invokeMethod('camera#animate', cameraUpdate.toMap());
+    await channel.invokeMethod('camera#animate', {"cameraUpdate": cameraUpdate.toMap()});
   }
 }

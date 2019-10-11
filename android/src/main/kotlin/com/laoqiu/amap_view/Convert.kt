@@ -460,7 +460,7 @@ class Convert {
             data.put("district", tip.district)
             data.put("name", tip.name)
             data.put("typeCode", tip.typeCode)
-            data.put("point", toJson(tip.point))
+            if (tip.point != null) data.put("point", toJson(tip.point))
             return data
         }
 
