@@ -517,6 +517,7 @@ class Convert {
 
         fun toJson(address: GeocodeAddress): Any {
             val data = HashMap<String, Any>()
+            data.put("adcode", address.adcode)
             data.put("province", address.province)
             data.put("city", address.city)
             data.put("district", address.district)
