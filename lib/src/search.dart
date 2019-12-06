@@ -4,13 +4,6 @@ class AmapSearch {
   static const MethodChannel _channel =
   const MethodChannel('plugins.laoqiu.com/amap_view_search');
 
-  /// 输入关键词补全
-  static Future<dynamic> inputTips(String keyword, String city) async {
-    assert(keyword != null);
-    assert(city != null);
-    return await _channel.invokeMethod('search#inputtips', {"keyword": keyword, "city": city});
-  }
-
   /// 逆地理编码转换
   static Future<dynamic> reGeocode(ReGeocodeParams params) async {
     assert(params != null);
@@ -28,6 +21,7 @@ class AmapSearch {
     assert(params != null);
     return await _channel.invokeMethod('search#route', params.toMap());
   }
+
 }
 
 class GeocodeParams {

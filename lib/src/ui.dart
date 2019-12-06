@@ -61,16 +61,6 @@ enum LatLntType {
   gps,
 }
 
-enum CoordType {
-  baidu,
-  mapBar,
-  mapABC,
-  soSoMap,
-  aliYun,
-  google,
-  gps,
-}
-
 class Avatar {
   Avatar({
     @required this.url,
