@@ -12,7 +12,7 @@
 //  Created by QiuLiang Wang on 2019/4/23.
 //
 import Flutter
-import MAMapKit
+import AMapNaviKit
 
 class AmapViewController: NSObject, FlutterPlatformView, MAMapViewDelegate, AmapOptionsSink {
     
