@@ -47,6 +47,7 @@ class AmapLocationFactory(private val registrar: PluginRegistry.Registrar) :
             "location#start" -> {
                 // Log.d("location", "start")
                 val interval: Int = call.argument<Int>("interval") ?: 2000
+                val once: Boolean = call.argument<Boolean>("once") ?: false
                 // 申请权限
                 ActivityCompat.requestPermissions(registrar.activity(),
                         arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -56,7 +57,12 @@ class AmapLocationFactory(private val registrar: PluginRegistry.Registrar) :
 
                 // 配置参数启动定位
                 var options = AMapLocationClientOption()
-                options.setInterval(interval.toLong())
+                options.setOnceLocation(once)
+                if (once) {
+                    options.setOnceLocationLatest(true)
+                } else {
+                    options.setInterval(interval.toLong())
+                }
                 locationClient.setLocationOption(options)
                 locationClient.startLocation()
 

@@ -34,9 +34,9 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> initPlatformState() async {
-    await AmapLocation.start();
+    await AmapLocation.start(once: true); // 单次定位
     AmapLocation.listen((event) {
-      print(event);
+      print("AmapLocation.listen -> $event");
     });
   }
 
@@ -114,6 +114,7 @@ class _MyAppState extends State<MyApp> {
 
   }
 
+<<<<<<< HEAD
   // Future<void> cameraMove(LatLng loc) async {
   //   await mapController.animateCamera(CameraUpdate.newLatLng(loc));
   // }
@@ -123,6 +124,17 @@ class _MyAppState extends State<MyApp> {
   //   print("inputTips-> $result");
   //   return result;
   // }
+=======
+//  Future<void> cameraMove(LatLng loc) async {
+//    await mapController.animateCamera(CameraUpdate.newLatLng(loc));
+//  }
+//
+//  Future<dynamic> inputTips(String keyword, String city) async {
+//    var result = await AmapSearch.inputTips(keyword, city);
+//    print("inputTips-> $result");
+//    return result;
+//  }
+>>>>>>> upstream/master
 
   void _onMapCreated(AMapController controller) {
     mapController = controller;
@@ -186,6 +198,7 @@ class _MyAppState extends State<MyApp> {
               //    onPressed: () {
               //      _routeNavi();
               //    },
+<<<<<<< HEAD
               //  ),
                RaisedButton(
                  child: Text("跳转"),
@@ -199,6 +212,21 @@ class _MyAppState extends State<MyApp> {
                   //  inputTips("医院", "杭州");
                  },
                ),
+=======
+//              //  ),
+//               RaisedButton(
+//                 child: Text("跳转"),
+//                 onPressed: () {
+//                   cameraMove(LatLng(30.330511, 120.122398));
+//                 },
+//               ),
+//               RaisedButton(
+//                 child: Text("搜索"),
+//                 onPressed: () {
+//                   inputTips("医院", "杭州");
+//                 },
+//               ),
+>>>>>>> upstream/master
 //                RaisedButton(
 //                  child: Text("行车路径规则1"),
 //                  onPressed: () {
