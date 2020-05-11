@@ -2,6 +2,7 @@ package com.laoqiu.amap_view
 
 import com.amap.api.navi.AmapNaviPage
 import com.amap.api.navi.AmapNaviParams
+import com.amap.api.navi.AMapNavi
 import com.amap.api.navi.AmapNaviType
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -34,6 +35,16 @@ class AmapNaviFactory(private val registrar: PluginRegistry.Registrar) :
                             }),
                             null
                     )
+//                    AMapNavi(registrar.activity()).run {
+//                        addAMapNaviListener(object: AMapNaviListener{
+//                            override fun onCalculateRouteSuccess(AMapCalcRouteResult routeResult) {
+//
+//                            }
+//                            override func onInitNaviSuccess() {
+//
+//                            }
+//                        })
+//                    }
                 }
                 result.success(null)
             }
