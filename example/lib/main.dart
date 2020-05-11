@@ -114,15 +114,15 @@ class _MyAppState extends State<MyApp> {
 
   }
 
-  Future<void> cameraMove(LatLng loc) async {
-    await mapController.animateCamera(CameraUpdate.newLatLng(loc));
-  }
+  // Future<void> cameraMove(LatLng loc) async {
+  //   await mapController.animateCamera(CameraUpdate.newLatLng(loc));
+  // }
 
-  Future<dynamic> inputTips(String keyword, String city) async {
-    var result = await AmapSearch.inputTips(keyword, city);
-    print("inputTips-> $result");
-    return result;
-  }
+  // Future<dynamic> inputTips(String keyword, String city) async {
+  //   var result = await AmapSearch.inputTips(keyword, city);
+  //   print("inputTips-> $result");
+  //   return result;
+  // }
 
   void _onMapCreated(AMapController controller) {
     mapController = controller;
@@ -169,12 +169,12 @@ class _MyAppState extends State<MyApp> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                // RaisedButton(
-                //   child: Text("添加"),
-                //   onPressed: () {
-                //     _addMarker();
-                //   },
-                // ),
+                RaisedButton(
+                  child: Text("添加"),
+                  onPressed: () {
+                    _addMarker();
+                  },
+                ),
                 // RaisedButton(
                 //   child: Text("清除"),
                 //   onPressed: () {
@@ -190,13 +190,13 @@ class _MyAppState extends State<MyApp> {
                RaisedButton(
                  child: Text("跳转"),
                  onPressed: () {
-                   cameraMove(LatLng(30.330511, 120.122398));
+                  //  cameraMove(LatLng(30.330511, 120.122398));
                  },
                ),
                RaisedButton(
                  child: Text("搜索"),
                  onPressed: () {
-                   inputTips("医院", "杭州");
+                  //  inputTips("医院", "杭州");
                  },
                ),
 //                RaisedButton(
