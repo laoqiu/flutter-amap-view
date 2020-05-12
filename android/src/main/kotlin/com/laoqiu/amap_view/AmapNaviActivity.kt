@@ -3,10 +3,10 @@ package com.laoqiu.amap_view
 import android.app.Activity
 import android.os.Bundle
 import android.util.Log
-import com.amap.api.maps.AMap
+import android.view.View
 import com.amap.api.navi.AMapNavi
 import com.amap.api.navi.AMapNaviListener
-import com.amap.api.navi.*
+import com.amap.api.navi.AMapNaviView
 import com.amap.api.navi.AMapNaviViewListener
 import com.amap.api.navi.enums.NaviType
 import com.amap.api.navi.model.*
@@ -19,8 +19,9 @@ class AmapNaviActivity: Activity(), AMapNaviListener, AMapNaviViewListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.e("调试信息", "当前为导航页面");
-        mAMapNaviView = AMapNaviView(this)
+        setContentView(R.layout.activity_basic_navi)
+        Log.e("调试信息", "当前为导航页面")
+        mAMapNaviView = findViewById<View>(R.id.navi_view) as AMapNaviView
         mAMapNaviView?.onCreate(savedInstanceState)
         mAMapNaviView?.setAMapNaviViewListener(this)
         mAMapNavi = AMapNavi.getInstance(applicationContext)
@@ -46,11 +47,11 @@ class AmapNaviActivity: Activity(), AMapNaviListener, AMapNaviViewListener {
     }
 
     override fun onNaviInfoUpdate(p0: NaviInfo?) {
-        TODO("Not yet implemented")
     }
 
     override fun onCalculateRouteSuccess(p0: IntArray?) {
-        TODO("Not yet implemented")
+        Log.e("调试信息", "路径计算完成");
+        mAMapNavi?.startNavi(NaviType.EMULATOR);
     }
 
     override fun onCalculateRouteSuccess(p0: AMapCalcRouteResult?) {
@@ -59,67 +60,51 @@ class AmapNaviActivity: Activity(), AMapNaviListener, AMapNaviViewListener {
     }
 
     override fun onCalculateRouteFailure(p0: Int) {
-        TODO("Not yet implemented")
     }
 
     override fun onCalculateRouteFailure(p0: AMapCalcRouteResult?) {
-        TODO("Not yet implemented")
     }
 
     override fun onServiceAreaUpdate(p0: Array<out AMapServiceAreaInfo>?) {
-        TODO("Not yet implemented")
     }
 
     override fun onEndEmulatorNavi() {
-        TODO("Not yet implemented")
     }
 
     override fun onArrivedWayPoint(p0: Int) {
-        TODO("Not yet implemented")
     }
 
     override fun onArriveDestination() {
-        TODO("Not yet implemented")
     }
 
     override fun onPlayRing(p0: Int) {
-        TODO("Not yet implemented")
     }
 
     override fun onTrafficStatusUpdate() {
-        TODO("Not yet implemented")
     }
 
     override fun onGpsOpenStatus(p0: Boolean) {
-        TODO("Not yet implemented")
     }
 
     override fun updateAimlessModeCongestionInfo(p0: AimLessModeCongestionInfo?) {
-        TODO("Not yet implemented")
     }
 
     override fun showCross(p0: AMapNaviCross?) {
-        TODO("Not yet implemented")
     }
 
     override fun onGetNavigationText(p0: Int, p1: String?) {
-        TODO("Not yet implemented")
     }
 
     override fun onGetNavigationText(p0: String?) {
-        TODO("Not yet implemented")
     }
 
     override fun updateAimlessModeStatistics(p0: AimLessModeStat?) {
-        TODO("Not yet implemented")
     }
 
     override fun hideCross() {
-        TODO("Not yet implemented")
     }
 
     override fun onInitNaviFailure() {
-        TODO("Not yet implemented")
     }
 
     override fun onInitNaviSuccess() {
@@ -202,7 +187,8 @@ class AmapNaviActivity: Activity(), AMapNaviListener, AMapNaviViewListener {
     }
 
     override fun onNaviBackClick(): Boolean {
-        TODO("Not yet implemented")
+        finish()
+        return true
     }
 
     override fun onNaviMapMode(p0: Int) {
@@ -215,6 +201,5 @@ class AmapNaviActivity: Activity(), AMapNaviListener, AMapNaviViewListener {
     }
 
     override fun onNaviSetting() {
-        TODO("Not yet implemented")
     }
 }
