@@ -13,7 +13,7 @@
         <!-- AMap Key -->
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="0a273d31de7ea69ac046a81c18d413c1" />
+            android:value="d725d072f587a82f8a78a6aeb5d005b7" />
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

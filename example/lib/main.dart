@@ -30,7 +30,7 @@ class _MyAppState extends State<MyApp> {
       markers[centerMarkerId] =
           Marker(markerId: centerMarkerId, position: center, infoWindow: InfoWindow(title: "中心"));
     });
-    initPlatformState();
+    // initPlatformState();
   }
 
   Future<void> initPlatformState() async {
@@ -84,7 +84,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _routeNavi() async {
     await AmapNavi.showRoute(
-        RouteNavi(end: Poi("下一站", LatLng(30.426789, 120.264577), "")));
+        RouteNavi( naviType: NaviType.ride,end: Poi("下一站", LatLng(30.426789, 120.264577), "")));
   }
 
   Future<void> _geocode() async {
@@ -114,7 +114,6 @@ class _MyAppState extends State<MyApp> {
 
   }
 
-<<<<<<< HEAD
   // Future<void> cameraMove(LatLng loc) async {
   //   await mapController.animateCamera(CameraUpdate.newLatLng(loc));
   // }
@@ -124,17 +123,6 @@ class _MyAppState extends State<MyApp> {
   //   print("inputTips-> $result");
   //   return result;
   // }
-=======
-//  Future<void> cameraMove(LatLng loc) async {
-//    await mapController.animateCamera(CameraUpdate.newLatLng(loc));
-//  }
-//
-//  Future<dynamic> inputTips(String keyword, String city) async {
-//    var result = await AmapSearch.inputTips(keyword, city);
-//    print("inputTips-> $result");
-//    return result;
-//  }
->>>>>>> upstream/master
 
   void _onMapCreated(AMapController controller) {
     mapController = controller;
@@ -193,13 +181,12 @@ class _MyAppState extends State<MyApp> {
                 //     _clear();
                 //   },
                 // ),
-              //  RaisedButton(
-              //    child: Text("导航"),
-              //    onPressed: () {
-              //      _routeNavi();
-              //    },
-<<<<<<< HEAD
-              //  ),
+               RaisedButton(
+                 child: Text("导航"),
+                 onPressed: () {
+                   _routeNavi();
+                 },
+               ),
                RaisedButton(
                  child: Text("跳转"),
                  onPressed: () {
@@ -212,21 +199,6 @@ class _MyAppState extends State<MyApp> {
                   //  inputTips("医院", "杭州");
                  },
                ),
-=======
-//              //  ),
-//               RaisedButton(
-//                 child: Text("跳转"),
-//                 onPressed: () {
-//                   cameraMove(LatLng(30.330511, 120.122398));
-//                 },
-//               ),
-//               RaisedButton(
-//                 child: Text("搜索"),
-//                 onPressed: () {
-//                   inputTips("医院", "杭州");
-//                 },
-//               ),
->>>>>>> upstream/master
 //                RaisedButton(
 //                  child: Text("行车路径规则1"),
 //                  onPressed: () {
