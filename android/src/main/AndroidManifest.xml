@@ -19,14 +19,15 @@
     <!--这个权限用于允许程序在手机屏幕关闭后后台进程仍然运行-->
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <application>
-        <activity
-            android:name=".AmapNaviActivity"
-            android:theme="@android:style/Theme.NoTitleBar"
-            android:screenOrientation="portrait"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
         <!-- 高德导航activity -->
         <activity
             android:name="com.amap.api.navi.AmapRouteActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
+        <!-- 高德骑行、步行导航 -->
+        <activity
+            android:name=".AmapNaviActivity"
             android:theme="@android:style/Theme.NoTitleBar"
             android:screenOrientation="portrait"
             android:configChanges="orientation|keyboardHidden|screenSize" />
