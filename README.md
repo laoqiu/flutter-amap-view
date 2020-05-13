@@ -13,24 +13,30 @@
 
 在`Info.plist`添加如下代码
 
-`
-	<key>NSLocationWhenInUseUsageDescription</key>
+```
+    // 默认
+    <key>NSLocationWhenInUseUsageDescription</key>
     <string>App需要您的同意,才能访问位置</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>App需要您的同意,才能访问位置</string>
-`
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>App需要您的同意,才能访问位置</string>
+
+    // 导航
+    <key>UIBackgroundModes</key> 
+    <array> 
+        <string>location</string> 
+    </array>
+```
 
 #### 持续定位
 
-`
+```
     await AmapLocation.start();
     AmapLocation.listen((dynamic location) { print(location);});
-   
-`
+```
 
 #### 使用导航
 
-`
+```
     await AmapNavi.showRoute(
         RouteNavi(
             // driver 汽车导航 默认使用官方组件 ride 骑行 walk 步行 【骑行和步行为自定义SDK 发起直接进入导航】
@@ -38,4 +44,4 @@
             end: Poi("下一站", LatLng(30.659314, 104.056294), ""),
         ),
     );
-`
+```

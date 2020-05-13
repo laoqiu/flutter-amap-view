@@ -1,19 +1,16 @@
 PODS:
-  - AMap3DMap (6.8.0):
-    - AMapFoundation (~> 1.5)
   - amap_view (0.0.1):
     - AMapLocation
     - AMapNavi
     - AMapSearch
     - Flutter
-  - AMapFoundation (1.5.6)
-  - AMapLocation (2.6.2):
-    - AMapFoundation (~> 1.4)
-  - AMapNavi (6.7.0):
-    - AMap3DMap (~> 6.7)
-    - AMapFoundation (~> 1.5)
-  - AMapSearch (6.6.0):
-    - AMapFoundation (~> 1.4)
+  - AMapFoundation (1.6.3)
+  - AMapLocation (2.6.5):
+    - AMapFoundation (~> 1.6.3)
+  - AMapNavi (7.4.0):
+    - AMapFoundation (~> 1.6.3)
+  - AMapSearch (7.3.0):
+    - AMapFoundation (~> 1.6.3)
   - Flutter (1.0.0)
 
 DEPENDENCIES:
@@ -21,8 +18,7 @@ DEPENDENCIES:
   - Flutter (from `.symlinks/flutter/ios`)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
-    - AMap3DMap
+  https://mirrors.tuna.tsinghua.edu.cn/git/CocoaPods/Specs.git:
     - AMapFoundation
     - AMapLocation
     - AMapNavi
@@ -35,14 +31,13 @@ EXTERNAL SOURCES:
     :path: ".symlinks/flutter/ios"
 
 SPEC CHECKSUMS:
-  AMap3DMap: a18ab563e968c8adafd9cc395f1f5e5d147d2607
   amap_view: 6d61352dfa55a4c208080591ff43b2a776ddb932
-  AMapFoundation: 20fce2a12cd152e1092afdd04379cdac21932185
-  AMapLocation: 89a7e4eb6040d32ba73c77a4966ecc66e46aa7c3
-  AMapNavi: 89e30fee35c01a00e45e846fa272f60724d06d0c
-  AMapSearch: def5983c8ca1a6d7430970046dc814f6e337621d
+  AMapFoundation: 9ed923193b357ebb30a073e9fe255d3c24054d5a
+  AMapLocation: c566d448285cd502c1e313063d9e2460bd4d7100
+  AMapNavi: fb36f9052867d33254a9a168b77952d1aa74e965
+  AMapSearch: a048bcca3bf0b8083345070e1f193f814bd8dc01
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
 
-PODFILE CHECKSUM: ebd43b443038e611b86ede96e613bd6033c49497
+PODFILE CHECKSUM: d597e7301008541183a272d3aa6d61353ccdb0d5
 
-COCOAPODS: 1.6.1
+COCOAPODS: 1.9.1
