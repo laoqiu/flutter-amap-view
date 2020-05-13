@@ -7,6 +7,7 @@
 
 import Foundation
 import AMapNaviKit
+import UIKit
 
 class AmapNavFactory: NSObject, AMapNaviCompositeManagerDelegate {
     private var messenger: FlutterBinaryMessenger
@@ -62,10 +63,14 @@ class AmapNavFactory: NSObject, AMapNaviCompositeManagerDelegate {
 //             }
 //            self.compositeManager.presentRoutePlanViewController(withOptions: config)
             let amapNaviViewController = AmapNaviViewController()
-            self.presentViewController(amapNaviViewController, animated: true, completion: nil)
+            let viewController = UIApplication.shared.keyWindow?.rootViewController
+            if viewController != nil {
+                viewController?.navigationController?.pushViewController(amapNaviViewController, animated: false)
+            }
             result(nil)
         default:
             result(FlutterMethodNotImplemented)
         }
     }
 }
+	
