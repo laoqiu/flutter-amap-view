@@ -33,7 +33,8 @@
 `
     await AmapNavi.showRoute(
         RouteNavi(
-            naviType: NaviType.walk, // 当前为步行 [骑行和步行 导航组件官方未提供 目前有问题]
+            // driver 汽车导航 默认使用官方组件 ride 骑行 walk 步行 【骑行和步行为自定义SDK 发起直接进入导航】
+            naviType: NaviType.driver 
             end: Poi("下一站", LatLng(30.659314, 104.056294), ""),
         ),
     );

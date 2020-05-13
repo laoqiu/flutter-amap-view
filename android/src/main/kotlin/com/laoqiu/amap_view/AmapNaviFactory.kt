@@ -2,6 +2,8 @@ package com.laoqiu.amap_view
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.Bundle
+import android.util.Log
 import com.amap.api.navi.AmapNaviPage
 import com.amap.api.navi.AmapNaviParams
 import com.amap.api.navi.AmapNaviType
@@ -32,6 +34,17 @@ class AmapNaviFactory(private val registrar: PluginRegistry.Registrar) :
                    when(naviType) {
                        1 , 2 -> {
                            var intent = Intent(registrar.activity(), AmapNaviActivity::class.java).addFlags(268435456)
+                           val bundle = Bundle()
+                           if (start != null) {
+                               var latLng = start.coordinate
+                               bundle.putDouble("startLat", latLng.latitude)
+                               bundle.putDouble("startLng", latLng.longitude)
+                           }
+                           var endLatLng = end.coordinate
+                           bundle.putDouble("endLat", endLatLng.latitude)
+                           bundle.putDouble("endLng", endLatLng.longitude)
+                           bundle.putInt("naviType", naviType)
+                           intent.putExtras(bundle)
                            registrar.activity().startActivity(intent)
                        }
                        else -> {

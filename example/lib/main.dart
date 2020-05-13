@@ -27,8 +27,10 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     imageConfiguration = createLocalImageConfiguration(context);
     setState(() {
-      markers[centerMarkerId] =
-          Marker(markerId: centerMarkerId, position: center, infoWindow: InfoWindow(title: "中心"));
+      markers[centerMarkerId] = Marker(
+          markerId: centerMarkerId,
+          position: center,
+          infoWindow: InfoWindow(title: "中心"));
     });
     // initPlatformState();
   }
@@ -47,31 +49,31 @@ class _MyAppState extends State<MyApp> {
     var markerIcon = await BitmapDescriptor.fromAssetImageWithText(
       imageConfiguration,
       "assets/map-point.png",
-      Label(text: "$_markerIdCounter", size: 48, color: Colors.red, offset: Offset(-1, 10)),
+      Label(
+          text: "$_markerIdCounter",
+          size: 48,
+          color: Colors.red,
+          offset: Offset(-1, 10)),
     );
     print(markerIcon.toMap());
     setState(() {
       markers[markerId] = Marker(
-        markerId: markerId,
-        icon: markerIcon,
-        position: LatLng(
-            center.latitude + sin(_markerIdCounter * pi / 6.0) / 20.0,
-            center.longitude + sin(_markerIdCounter * pi / 6.0) / 20.0),
-        infoWindow: InfoWindow(title: 'test', snippet: "hahahkwg")
-      );
+          markerId: markerId,
+          icon: markerIcon,
+          position: LatLng(
+              center.latitude + sin(_markerIdCounter * pi / 6.0) / 20.0,
+              center.longitude + sin(_markerIdCounter * pi / 6.0) / 20.0),
+          infoWindow: InfoWindow(title: 'test', snippet: "hahahkwg"));
     });
   }
 
   void _addPolyline() async {
     final PolylineId polylineId = PolylineId('polyline_01');
     setState(() {
-      polylines[polylineId] = Polyline(
-          polylineId: polylineId,
-          points: <LatLng>[
-            LatLng(30.330511, 120.122398),
-            LatLng(30.352437, 120.212005)
-          ]
-      );
+      polylines[polylineId] = Polyline(polylineId: polylineId, points: <LatLng>[
+        LatLng(30.330511, 120.122398),
+        LatLng(30.352437, 120.212005)
+      ]);
     });
   }
 
@@ -83,26 +85,34 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _routeNavi() async {
-    await AmapNavi.showRoute(
-        RouteNavi( naviType: NaviType.ride,end: Poi("下一站", LatLng(30.426789, 120.264577), "")));
+    await AmapNavi.showRoute(RouteNavi(
+      naviType: NaviType.walk,
+      start: Poi("", LatLng(30.649863, 104.066851), ""),
+      end: Poi("下一站", LatLng(30.659019, 104.057066), ""),
+    ));
   }
 
   Future<void> _geocode() async {
-    var result = await AmapSearch.geocode(GeocodeParams(address: "北京市海淀区北京大学口腔医院"));
+    var result =
+        await AmapSearch.geocode(GeocodeParams(address: "北京市海淀区北京大学口腔医院"));
     print(result);
   }
-  
+
   Future<void> _searchRoute(LatLng start, LatLng end) async {
     var result = await AmapSearch.route(RouteParams(
-        start: start,
-        end: end,
-        // wayPoints:
+      start: start,
+      end: end,
+      // wayPoints:
     ));
     // print(result);
-    var routes = result[0]["steps"].map((i)=> i["polyline"].map((p)=> LatLng(p["latitude"], p["longitude"]) ).toList()).toList();
+    var routes = result[0]["steps"]
+        .map((i) => i["polyline"]
+            .map((p) => LatLng(p["latitude"], p["longitude"]))
+            .toList())
+        .toList();
     setState(() {
       polylines = {};
-      for (var i=0; i<routes.length; i++) {
+      for (var i = 0; i < routes.length; i++) {
         var polylineId = PolylineId('polyline_$i');
         polylines[polylineId] = Polyline(
           polylineId: polylineId,
@@ -111,7 +121,6 @@ class _MyAppState extends State<MyApp> {
         );
       }
     });
-
   }
 
   // Future<void> cameraMove(LatLng loc) async {
@@ -181,24 +190,24 @@ class _MyAppState extends State<MyApp> {
                 //     _clear();
                 //   },
                 // ),
-               RaisedButton(
-                 child: Text("导航"),
-                 onPressed: () {
-                   _routeNavi();
-                 },
-               ),
-               RaisedButton(
-                 child: Text("跳转"),
-                 onPressed: () {
-                  //  cameraMove(LatLng(30.330511, 120.122398));
-                 },
-               ),
-               RaisedButton(
-                 child: Text("搜索"),
-                 onPressed: () {
-                  //  inputTips("医院", "杭州");
-                 },
-               ),
+                RaisedButton(
+                  child: Text("导航"),
+                  onPressed: () {
+                    _routeNavi();
+                  },
+                ),
+                RaisedButton(
+                  child: Text("跳转"),
+                  onPressed: () {
+                    //  cameraMove(LatLng(30.330511, 120.122398));
+                  },
+                ),
+                RaisedButton(
+                  child: Text("搜索"),
+                  onPressed: () {
+                    //  inputTips("医院", "杭州");
+                  },
+                ),
 //                RaisedButton(
 //                  child: Text("行车路径规则1"),
 //                  onPressed: () {

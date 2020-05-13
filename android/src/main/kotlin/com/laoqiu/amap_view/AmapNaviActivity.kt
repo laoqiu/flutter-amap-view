@@ -16,11 +16,22 @@ import com.autonavi.tbt.TrafficFacilityInfo
 class AmapNaviActivity: Activity(), AMapNaviListener, AMapNaviViewListener {
     private var mAMapNaviView: AMapNaviView? = null
     private var mAMapNavi: AMapNavi? = null
+    private var startLatLng: NaviLatLng ? = null
+    private var endLatLng: NaviLatLng ? = null
+    private var naviType: Int ? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_basic_navi)
         Log.e("调试信息", "当前为导航页面")
+        val bundle = this.intent.extras
+        var startLat = bundle.getDouble("startLat")
+        var startLng = bundle.getDouble("startLng")
+        if (startLat != 0.0 && startLng != 0.0) {
+            startLatLng = NaviLatLng(startLat, startLng)
+        }
+        endLatLng = NaviLatLng(bundle.getDouble("endLat"),bundle.getDouble("endLng"))
+        naviType = bundle.getInt("naviType")
         mAMapNaviView = findViewById<View>(R.id.navi_view) as AMapNaviView
         mAMapNaviView?.onCreate(savedInstanceState)
         mAMapNaviView?.setAMapNaviViewListener(this)
@@ -51,12 +62,12 @@ class AmapNaviActivity: Activity(), AMapNaviListener, AMapNaviViewListener {
 
     override fun onCalculateRouteSuccess(p0: IntArray?) {
         Log.e("调试信息", "路径计算完成");
-        mAMapNavi?.startNavi(NaviType.EMULATOR);
+        mAMapNavi?.startNavi(NaviType.GPS);
     }
 
     override fun onCalculateRouteSuccess(p0: AMapCalcRouteResult?) {
         Log.e("调试信息", "路径计算完成");
-        mAMapNavi?.startNavi(NaviType.EMULATOR);
+        mAMapNavi?.startNavi(NaviType.GPS);
     }
 
     override fun onCalculateRouteFailure(p0: Int) {
@@ -110,11 +121,22 @@ class AmapNaviActivity: Activity(), AMapNaviListener, AMapNaviViewListener {
     override fun onInitNaviSuccess() {
         Log.e("调试信息", "初始化完成");
         Log.e("调试信息", "计算导航路线");
-//        if (naviType == 1) {
-          mAMapNavi?.calculateRideRoute(NaviLatLng(30.674966,104.071571));
-//        } else {
-//           calculateWalkRoute(NaviLatLng(30.674966,104.071571));
-//        }
+//        Log.e("调试信息", endLatLng.toString());
+        Log.e("调试信息", naviType.toString());
+        if (naviType == 2) {
+            if (startLatLng != null) {
+                mAMapNavi?.calculateRideRoute(startLatLng, endLatLng)
+            } else {
+                Log.e("调试信息", endLatLng.toString());
+                mAMapNavi?.calculateRideRoute(endLatLng)
+            }
+        } else {
+            if (startLatLng != null) {
+                mAMapNavi?.calculateWalkRoute(startLatLng, endLatLng)
+            } else {
+                mAMapNavi?.calculateWalkRoute(endLatLng)
+            }
+        }
     }
 
     override fun onReCalculateRouteForTrafficJam() {
