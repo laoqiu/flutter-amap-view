@@ -1,10 +1,8 @@
 package com.laoqiu.amap_view
 
-import android.util.Log
 import com.amap.api.services.geocoder.*
 import com.amap.api.services.help.Inputtips
 import com.amap.api.services.help.InputtipsQuery
-import com.amap.api.services.help.Tip
 import com.amap.api.services.route.*
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -80,11 +78,17 @@ class AmapSearchFactory(private val registrar: PluginRegistry.Registrar) :
                 var start = Convert.toLatLng(call.argument("start"))
                 var end = Convert.toLatLng(call.argument("end"))
                 val drivingMode = call.argument<Int>("drivingMode") ?: 0
+                val routeType = call.argument<Int>("routeType") ?: 0
                 var wayPoints = Convert.toWayList(call.argument("wayPoints")) // 途经点
 
                 if (start != null && end != null) {
                     var fromAndTo = RouteSearch.FromAndTo(Convert.toLatLntPoint(start), Convert.toLatLntPoint(end))
-                    var query = RouteSearch.DriveRouteQuery(fromAndTo, drivingMode, wayPoints, null, "")
+
+                    var query = when (routeType) {
+                        3 -> RouteSearch.RideRouteQuery(fromAndTo, drivingMode)
+                        else -> RouteSearch.DriveRouteQuery(fromAndTo, drivingMode, wayPoints, null, "")
+                    }
+
                     RouteSearch(registrar.activity()).run {
                         setRouteSearchListener(object: RouteSearch.OnRouteSearchListener{
                             override fun onBusRouteSearched(p0: BusRouteResult?, p1: Int) {
@@ -98,13 +102,23 @@ class AmapSearchFactory(private val registrar: PluginRegistry.Registrar) :
                                 }
 
                             }
-                            override fun onRideRouteSearched(p0: RideRouteResult?, p1: Int) {
+                            override fun onRideRouteSearched(routeResult: RideRouteResult?, p1: Int) {
+                                // 返回骑行路径规划
+                                if (routeResult != null) {
+                                    result.success(Convert.rideToJson(routeResult.paths))
+                                } else {
+                                    result.success(null)
+                                }
                             }
                             override fun onWalkRouteSearched(p0: WalkRouteResult?, p1: Int) {
                             }
                         })
-
-                        calculateDriveRouteAsyn(query)
+                        
+                        when(routeType) {
+                            3 -> calculateDrivePlanAsyn(query as RouteSearch.DrivePlanQuery?)
+                            else -> calculateDriveRouteAsyn(query as RouteSearch.DriveRouteQuery?)
+                        }
+                        
                     }
                 }
 
@@ -113,21 +127,42 @@ class AmapSearchFactory(private val registrar: PluginRegistry.Registrar) :
                 var keyword = Convert.toString(call.argument("keyword")!!)
                 var city = Convert.toString(call.argument("city")!!)
                 var query: InputtipsQuery = InputtipsQuery(keyword, city)
-                query.setCityLimit(true) // 限制在当前城市
+                query.cityLimit = true // 限制在当前城市
                 Inputtips(registrar.activity(), query).run {
-                    setInputtipsListener(object: Inputtips.InputtipsListener{
-                        override fun onGetInputtips(tipList: MutableList<Tip>?, code: Int) {
-                            if (code == 1000) { // 正确返回
-                                result.success(Convert.tipsToJson(tipList))
-                            } else {
-                                result.success(null)
-                            }
+                    setInputtipsListener { tipList, code ->
+                        if (code == 1000) { // 正确返回
+                            result.success(Convert.tipsToJson(tipList))
+                        } else {
+                            result.success(null)
                         }
-                    })
+                    }
                     // 异步执行
                     requestInputtipsAsyn()
                 }
             }
+//            "search#distance" -> {
+//                var start = Convert.toLatLng(call.argument("start"))
+//                var end = Convert.toLatLng(call.argument("end"))
+//                val latLonPoints: MutableList<LatLonPoint> = ArrayList()
+//                latLonPoints.add(Convert.toLatLntPoint(start))
+////                latLonPoints.add(end)
+//                var  distanceQuery = DistanceSearch.DistanceQuery().run {
+//                    origins = latLonPoints
+//                    destination = Convert.toLatLntPoint(end)
+//                    type = DistanceSearch.TYPE_DRIVING_DISTANCE
+//                }
+//                DistanceSearch(registrar.activity()).run {
+//                    calculateRouteDistanceAsyn(distanceQuery)
+//                    setDistanceSearchListener { distanceResult, code ->
+//                        if (code == 1000) { // 正确返回
+//                            result.success(Convert.tipsToJson(distanceResult))
+//                        } else {
+//                            result.success(null)
+//                        }
+//                    }
+//                }
+//
+//            }
             else -> result.notImplemented()
         }
     }

@@ -23,9 +23,10 @@ import java.io.InputStream
 import java.net.URL
 import com.amap.api.maps.model.CameraPosition
 import com.amap.api.maps.model.LatLngBounds
-import java.util.Arrays.asList
 import com.amap.api.maps.model.LatLng
 import com.amap.api.services.help.Tip
+import com.amap.api.services.route.RidePath
+import com.amap.api.services.route.RideStep
 
 
 // Gson扩展方法
@@ -411,7 +412,7 @@ class Convert {
             return data
         }
 
-        fun pathToJson(list: List<DrivePath>): Any {
+        fun pathToJson(list: MutableList<DrivePath>): Any {
             val data = mutableListOf<Any>()
             for (path in list) {
                 data.add(toJson(path))
@@ -419,7 +420,15 @@ class Convert {
             return data
         }
 
-        fun tipsToJson(list: MutableList<Tip>?): Any {
+        fun rideToJson(list: MutableList<RidePath>): Any {
+            val data = mutableListOf<Any>()
+            for (ride in list) {
+                data.add(toJson(ride))
+            }
+            return data
+        }
+
+        fun tipsToJson(list: MutableList<Tip>): Any {
             val data = mutableListOf<Any>()
             if (list != null) {
                 for (tip in list) {
@@ -555,6 +564,31 @@ class Convert {
             data.put("duration", step.duration)
             return data
         }
+
+        fun toJson(path: RidePath): Any {
+            val data = HashMap<String, Any>()
+            val steps = mutableListOf<Any>()
+            for (s in path.steps) {
+                steps.add(toJson(s))
+            }
+            data.put("steps", steps)
+            data.put("distance", path.distance)
+            data.put("duration", path.duration)
+            return data
+        }
+
+        fun toJson(step: RideStep): Any {
+            val data = HashMap<String, Any>()
+            data.put("polyline", polylineToJson(step.polyline))
+            data.put("distance", step.distance)
+            data.put("duration", step.duration)
+            data.put("action", step.action)
+            data.put("assistantAction", step.assistantAction)
+            data.put("orientation", step.orientation)
+            data.put("road", step.road)
+            return data
+        }
+
 
         fun toJson(point: DPoint): Any {
             val data = HashMap<String, Any>()

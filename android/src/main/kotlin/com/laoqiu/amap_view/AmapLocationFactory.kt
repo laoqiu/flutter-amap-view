@@ -19,6 +19,7 @@ class AmapLocationFactory(private val registrar: PluginRegistry.Registrar) :
     private var eventSink: EventChannel.EventSink? = null
     private var locationClient: AMapLocationClient
     private var fetchLocationClient: AMapLocationClient
+    private var fetchResult: Result? = null
 
     init {
 
@@ -42,6 +43,24 @@ class AmapLocationFactory(private val registrar: PluginRegistry.Registrar) :
         // 初始化定位
         locationClient = AMapLocationClient(registrar.activity())
         fetchLocationClient = AMapLocationClient(registrar.activity())
+        var fetchLocationOption = AMapLocationClientOption()
+        fetchLocationOption.locationMode = AMapLocationClientOption.AMapLocationMode.Hight_Accuracy
+        fetchLocationOption.isOnceLocation = true
+        fetchLocationOption.isOnceLocationLatest = true
+        fetchLocationClient.setLocationOption(fetchLocationOption)
+        fetchLocationClient.setLocationListener {
+//            Log.d("location", "定位监听中")
+//            Log.d("location", it.toStr())
+
+            if (it != null) {
+                if (it.errorCode == 0) {
+//                    Log.d("location", "返回数据啦")
+                    fetchResult?.success(Convert.toJson(it))
+                } else {
+                    fetchResult?.error("AmapError", "onLocationChanged Error: ${it.errorInfo}", it.errorInfo)
+                }
+            }
+        }
         locationClient.setLocationListener(this)
     }
 
@@ -49,37 +68,18 @@ class AmapLocationFactory(private val registrar: PluginRegistry.Registrar) :
         when (call.method) {
             "location#fetchLocation" -> {
                 Log.d("location", "fetchLocation")
-                fetchLocationClient.setLocationListener {}
-                var fetchLocationOption = AMapLocationClientOption()
-                fetchLocationOption.locationMode = AMapLocationClientOption.AMapLocationMode.Hight_Accuracy
-                fetchLocationOption.interval = 500
-                fetchLocationOption.isOnceLocation = true
-                fetchLocationClient.setLocationOption(fetchLocationOption)
-                fetchLocationClient.setLocationListener {
-                    Log.d("location", "定位监听中")
-                    Log.d("location", it.toStr())
-                    if (it != null) {
-                        if (it.errorCode == 0) {
-                            result.success(it)
-                        } else {
-                            result.error("AmapError", "onLocationChanged Error: ${it.errorInfo}", it.errorInfo)
-                        }
-                    }
-                }
+                // 申请权限
+                ActivityCompat.requestPermissions(registrar.activity(),
+                        arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION,
+                                Manifest.permission.ACCESS_FINE_LOCATION),
+                        321
+                )
+                fetchResult = result
                 fetchLocationClient.startLocation()
-//                fetchLocationClient.setLocationListener {
-//                    fun onLocationChanged(AMapLocation amapLocation) {
-//                        if(amapLocation != null) {
-//
-//                        }
-//                    }
-//                }
-//                result.success(3)
             }
             "location#start" -> {
                 // Log.d("location", "start")
                 val interval: Int = call.argument<Int>("interval") ?: 2000
-                val once: Boolean = call.argument<Boolean>("once") ?: false
                 // 申请权限
                 ActivityCompat.requestPermissions(registrar.activity(),
                         arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -89,12 +89,8 @@ class AmapLocationFactory(private val registrar: PluginRegistry.Registrar) :
 
                 // 配置参数启动定位
                 var options = AMapLocationClientOption()
-                options.isOnceLocation = once
-                if (once) {
-                    options.isOnceLocationLatest = true
-                } else {
-                    options.interval = interval.toLong()
-                }
+                options.isOnceLocation = false
+                options.interval = interval.toLong()
                 locationClient.setLocationOption(options)
                 locationClient.startLocation()
 

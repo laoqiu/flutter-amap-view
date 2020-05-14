@@ -34,6 +34,13 @@
     AmapLocation.listen((dynamic location) { print(location);});
 ```
 
+#### 单次定位
+
+```
+    Location data = await AmapLocation.fetchLocation();
+    print(data.toJson());
+```
+
 #### 使用导航
 
 ```
