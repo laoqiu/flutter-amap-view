@@ -11,12 +11,14 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry
 
+
 class AmapLocationFactory(private val registrar: PluginRegistry.Registrar) :
         AMapLocationListener,
         MethodCallHandler {
 
     private var eventSink: EventChannel.EventSink? = null
     private var locationClient: AMapLocationClient
+    private var fetchLocationClient: AMapLocationClient
 
     init {
 
@@ -39,11 +41,41 @@ class AmapLocationFactory(private val registrar: PluginRegistry.Registrar) :
 
         // 初始化定位
         locationClient = AMapLocationClient(registrar.activity())
+        fetchLocationClient = AMapLocationClient(registrar.activity())
         locationClient.setLocationListener(this)
     }
 
     override fun onMethodCall(call: MethodCall, result: Result) {
         when (call.method) {
+            "location#fetchLocation" -> {
+                Log.d("location", "fetchLocation")
+                fetchLocationClient.setLocationListener {}
+                var fetchLocationOption = AMapLocationClientOption()
+                fetchLocationOption.locationMode = AMapLocationClientOption.AMapLocationMode.Hight_Accuracy
+                fetchLocationOption.interval = 500
+                fetchLocationOption.isOnceLocation = true
+                fetchLocationClient.setLocationOption(fetchLocationOption)
+                fetchLocationClient.setLocationListener {
+                    Log.d("location", "定位监听中")
+                    Log.d("location", it.toStr())
+                    if (it != null) {
+                        if (it.errorCode == 0) {
+                            result.success(it)
+                        } else {
+                            result.error("AmapError", "onLocationChanged Error: ${it.errorInfo}", it.errorInfo)
+                        }
+                    }
+                }
+                fetchLocationClient.startLocation()
+//                fetchLocationClient.setLocationListener {
+//                    fun onLocationChanged(AMapLocation amapLocation) {
+//                        if(amapLocation != null) {
+//
+//                        }
+//                    }
+//                }
+//                result.success(3)
+            }
             "location#start" -> {
                 // Log.d("location", "start")
                 val interval: Int = call.argument<Int>("interval") ?: 2000
@@ -57,11 +89,11 @@ class AmapLocationFactory(private val registrar: PluginRegistry.Registrar) :
 
                 // 配置参数启动定位
                 var options = AMapLocationClientOption()
-                options.setOnceLocation(once)
+                options.isOnceLocation = once
                 if (once) {
-                    options.setOnceLocationLatest(true)
+                    options.isOnceLocationLatest = true
                 } else {
-                    options.setInterval(interval.toLong())
+                    options.interval = interval.toLong()
                 }
                 locationClient.setLocationOption(options)
                 locationClient.startLocation()

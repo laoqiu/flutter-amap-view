@@ -8,6 +8,10 @@ class AmapLocation {
     await _channel.invokeMethod('location#start', {"interval": interval, "once": once});
   }
 
+  static Future<dynamic> fetchLocation() async {
+    return await _channel.invokeMethod('location#fetchLocation');
+  }
+
   static Future<void> stop() async {
     await _channel.invokeMethod('location#stop');
   }

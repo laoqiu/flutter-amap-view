@@ -197,11 +197,18 @@ class _MyAppState extends State<MyApp> {
                   },
                 ),
                 RaisedButton(
-                  child: Text("跳转"),
-                  onPressed: () {
-                    //  cameraMove(LatLng(30.330511, 120.122398));
+                  child: Text("定位"),
+                  onPressed: () async {
+                   dynamic data = await AmapLocation.fetchLocation();
+                   print(data);
                   },
                 ),
+                // RaisedButton(
+                //   child: Text("跳转"),
+                //   onPressed: () {
+                //     //  cameraMove(LatLng(30.330511, 120.122398));
+                //   },
+                // ),
                 RaisedButton(
                   child: Text("搜索"),
                   onPressed: () {
