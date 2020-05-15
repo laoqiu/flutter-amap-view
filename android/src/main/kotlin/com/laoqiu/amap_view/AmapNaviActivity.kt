@@ -21,23 +21,25 @@ class AmapNaviActivity: Activity(), AMapNaviListener, AMapNaviViewListener {
     private var naviType: Int ? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_basic_navi)
-        Log.e("调试信息", "当前为导航页面")
-        val bundle = this.intent.extras
-        var startLat = bundle.getDouble("startLat")
-        var startLng = bundle.getDouble("startLng")
-        if (startLat != 0.0 && startLng != 0.0) {
-            startLatLng = NaviLatLng(startLat, startLng)
+        if (savedInstanceState != null) {
+            super.onCreate(savedInstanceState)
+            setContentView(R.layout.activity_basic_navi)
+            Log.e("调试信息", "当前为导航页面")
+            val bundle = this.intent.extras
+            var startLat = bundle.getDouble("startLat")
+            var startLng = bundle.getDouble("startLng")
+            if (startLat != 0.0 && startLng != 0.0) {
+                startLatLng = NaviLatLng(startLat, startLng)
+            }
+            endLatLng = NaviLatLng(bundle.getDouble("endLat"),bundle.getDouble("endLng"))
+            naviType = bundle.getInt("naviType")
+            mAMapNaviView = findViewById<View>(R.id.navi_view) as AMapNaviView
+            mAMapNaviView?.onCreate(savedInstanceState)
+            mAMapNaviView?.setAMapNaviViewListener(this)
+            mAMapNavi = AMapNavi.getInstance(applicationContext)
+            mAMapNavi?.setUseInnerVoice(true)
+            mAMapNavi?.addAMapNaviListener(this)
         }
-        endLatLng = NaviLatLng(bundle.getDouble("endLat"),bundle.getDouble("endLng"))
-        naviType = bundle.getInt("naviType")
-        mAMapNaviView = findViewById<View>(R.id.navi_view) as AMapNaviView
-        mAMapNaviView?.onCreate(savedInstanceState)
-        mAMapNaviView?.setAMapNaviViewListener(this)
-        mAMapNavi = AMapNavi.getInstance(applicationContext)
-        mAMapNavi?.setUseInnerVoice(true)
-        mAMapNavi?.addAMapNaviListener(this)
     }
     override fun onResume() {
         super.onResume()
