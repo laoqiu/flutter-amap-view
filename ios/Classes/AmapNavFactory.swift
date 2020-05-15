@@ -12,9 +12,12 @@ import UIKit
 class AmapNavFactory: NSObject, AMapNaviCompositeManagerDelegate {
     private var messenger: FlutterBinaryMessenger
     private var compositeManager: AMapNaviCompositeManager!
+    private var navigationController: UINavigationController!
+    private var window: UIWindow!
     
     init(withMessenger messenger: FlutterBinaryMessenger) {
         self.messenger = messenger
+        
         super.init()
     }
     
@@ -62,20 +65,16 @@ class AmapNavFactory: NSObject, AMapNaviCompositeManagerDelegate {
 //                 }
 //             }
 //            self.compositeManager.presentRoutePlanViewController(withOptions: config)
-            let mview = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
-            let delegate  = UIApplication.shared.delegate as! AppDelegate
-            mview.backgroundColor = UIColor(white: 0.5, alpha: 0.8)
-            //添加tag
-            mview.tag = 1
-            //添加视图
-            delegate.window?.addSubview(mview)
-            //通过tag 从window移除视图
-            delegate.window?.viewWithTag(1)?.removeFromSuperview()
-            let amapNaviViewController = AmapNaviViewController()
-            let viewController = UIApplication.shared.keyWindow?.rootViewController
-            if viewController != nil {
-                viewController?.navigationController?.pushViewController(amapNaviViewController, animated: false)
-            }
+           
+//            delegate.window?.viewWithTag(1)?.removeFromSuperview()
+             let flutterViewController = FlutterViewController.init()
+              navigationController = UINavigationController.init(rootViewController: flutterViewController)
+              navigationController?.isNavigationBarHidden = true
+              
+              window = UIWindow(frame: UIScreen.main.bounds)
+              window.rootViewController = self.navigationController
+              window.makeKeyAndVisible()
+              navigationController?.pushViewController(AmapNaviViewController(), animated: true)
             result(nil)
         default:
             result(FlutterMethodNotImplemented)

@@ -24,9 +24,10 @@
 
     // 导航
     <key>UIBackgroundModes</key> 
-    <array> 
-        <string>location</string> 
-    </array>
+	<array> 
+		<string>location</string>
+		<string>audio</string> 
+	</array>
 ```
 
 #### 持续定位
