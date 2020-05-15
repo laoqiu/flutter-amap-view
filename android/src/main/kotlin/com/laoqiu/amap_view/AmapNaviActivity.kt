@@ -21,8 +21,8 @@ class AmapNaviActivity: Activity(), AMapNaviListener, AMapNaviViewListener {
     private var naviType: Int ? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         if (savedInstanceState != null) {
-            super.onCreate(savedInstanceState)
             setContentView(R.layout.activity_basic_navi)
             Log.e("调试信息", "当前为导航页面")
             val bundle = this.intent.extras
