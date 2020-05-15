@@ -94,7 +94,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _geocode() async {
     var result =
-        await AmapSearch.geocode(GeocodeParams(address: "北京市海淀区北京大学口腔医院"));
+    await AmapSearch.geocode(GeocodeParams(address: "北京市海淀区北京大学口腔医院"));
     print(result);
   }
 
@@ -106,8 +106,8 @@ class _MyAppState extends State<MyApp> {
     // print(result);
     var routes = result[0]["steps"]
         .map((i) => i["polyline"]
-            .map((p) => LatLng(p["latitude"], p["longitude"]))
-            .toList())
+        .map((p) => LatLng(p["latitude"], p["longitude"]))
+        .toList())
         .toList();
     setState(() {
       polylines = {};

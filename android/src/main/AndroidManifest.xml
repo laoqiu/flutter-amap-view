@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.laoqiu.amap_view">
+    package="com.laoqiu.amap_view">
     <!--允许程序打开网络套接字-->
     <uses-permission android:name="android.permission.INTERNET" />
     <!--允许程序设置内置sd卡的写权限-->
@@ -28,7 +28,7 @@
         <!-- 高德骑行、步行导航 -->
         <activity
             android:name=".AmapNaviActivity"
-            android:theme="@android:style/Theme.NoTitleBar"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             android:screenOrientation="portrait"
             android:configChanges="orientation|keyboardHidden|screenSize" />
         <!-- 高德离线下载activity -->
