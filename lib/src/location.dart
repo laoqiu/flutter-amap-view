@@ -1,16 +1,18 @@
 part of amap_view;
 
 class AmapLocation {
-  static const _channel = MethodChannel('plugins.laoqiu.com/amap_view_location');
-  static const _event = EventChannel('plugins.laoqiu.com/amap_view_location_event');
+  static const _channel =
+      MethodChannel('plugins.laoqiu.com/amap_view_location');
+  static const _event =
+      EventChannel('plugins.laoqiu.com/amap_view_location_event');
 
-  static Future<void> start({int interval, bool once}) async {
-    await _channel.invokeMethod('location#start', {"interval": interval, "once": once});
+  static Future<void> start({int interval}) async {
+    await _channel.invokeMethod('location#start', {"interval": interval});
   }
 
   static Future<Location> fetchLocation() async {
-     dynamic location = await _channel.invokeMethod('location#fetchLocation');
-     return Location.fromJson(location);
+    dynamic location = await _channel.invokeMethod('location#fetchLocation');
+    return Location.fromJson(location);
   }
 
   static Future<void> stop() async {
@@ -81,7 +83,9 @@ class LatLngBounds {
 
   @override
   bool operator ==(Object o) {
-    return o is LatLngBounds && o.northeast == northeast && o.southwest == southwest;
+    return o is LatLngBounds &&
+        o.northeast == northeast &&
+        o.southwest == southwest;
   }
 
   @override
@@ -136,8 +140,6 @@ class ConvertParms {
   }
 }
 
-
-
 class Location {
   final double latitude;
 
@@ -166,8 +168,9 @@ class Location {
     this.street,
   });
 
-  factory Location.fromJson(Map<dynamic, dynamic> json) => _$LocationFromJson(json);
-  
+  factory Location.fromJson(Map<dynamic, dynamic> json) =>
+      _$LocationFromJson(json);
+
   Map<String, dynamic> toJson() => _$LocationToJson(this);
 }
 

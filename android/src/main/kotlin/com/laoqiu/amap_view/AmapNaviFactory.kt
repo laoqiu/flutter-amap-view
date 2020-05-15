@@ -35,10 +35,14 @@ class AmapNaviFactory(private val registrar: PluginRegistry.Registrar) :
                        1 , 2 -> {
                            var intent = Intent(registrar.activity(), AmapNaviActivity::class.java).addFlags(268435456)
                            val bundle = Bundle()
+//                           Log.e("调试信息", start.toString())
                            if (start != null) {
                                var latLng = start.coordinate
                                bundle.putDouble("startLat", latLng.latitude)
                                bundle.putDouble("startLng", latLng.longitude)
+                           } else {
+                               bundle.putDouble("startLat", 0.0)
+                               bundle.putDouble("startLng", 0.0)
                            }
                            var endLatLng = end.coordinate
                            bundle.putDouble("endLat", endLatLng.latitude)

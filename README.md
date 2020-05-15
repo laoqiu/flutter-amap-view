@@ -19,6 +19,8 @@
     <string>App需要您的同意,才能访问位置</string>
     <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
     <string>App需要您的同意,才能访问位置</string>
+    <key>amap_key</key>
+	<string>  你的key  </string>
 
     // 导航
     <key>UIBackgroundModes</key> 
@@ -37,11 +39,11 @@
 #### 单次定位
 
 ```
-    Location data = await AmapLocation.fetchLocation();
-    print(data.toJson());
+    Location location = await AmapLocation.fetchLocation();
+    print(location.toJson());
 ```
 
-#### 路径规划
+#### 路径规划 `目前只支持android`
 
 ```
     dynamic data = await AmapSearch.route(
@@ -52,7 +54,7 @@
     print(data);
 ```
 
-#### 使用导航
+#### 使用导航 `骑行、步行目前只支持android`
 
 ```
     await AmapNavi.showRoute(

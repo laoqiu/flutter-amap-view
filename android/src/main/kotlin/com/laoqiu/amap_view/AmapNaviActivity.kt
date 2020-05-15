@@ -16,14 +16,14 @@ import com.autonavi.tbt.TrafficFacilityInfo
 class AmapNaviActivity: Activity(), AMapNaviListener, AMapNaviViewListener {
     private var mAMapNaviView: AMapNaviView? = null
     private var mAMapNavi: AMapNavi? = null
-    private var startLatLng: NaviLatLng ? = null
-    private var endLatLng: NaviLatLng ? = null
+    private var startLatLng: NaviLatLng? = null
+    private var endLatLng: NaviLatLng? = null
     private var naviType: Int ? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_basic_navi)
-        Log.e("调试信息", "当前为导航页面")
+//        Log.e("调试信息", "当前为导航页面")
         val bundle = this.intent.extras
         var startLat = bundle.getDouble("startLat")
         var startLng = bundle.getDouble("startLng")

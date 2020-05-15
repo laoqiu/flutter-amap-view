@@ -12,7 +12,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+  Location _location = null;
 
   AMapController mapController;
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
@@ -32,13 +32,14 @@ class _MyAppState extends State<MyApp> {
           position: center,
           infoWindow: InfoWindow(title: "中心"));
     });
-    // initPlatformState();
+
+    initPlatformState();
   }
 
   Future<void> initPlatformState() async {
-    await AmapLocation.start(once: true); // 单次定位
-    AmapLocation.listen((event) {
-      print("AmapLocation.listen -> $event");
+    Location location = await AmapLocation.fetchLocation();
+    setState(() {
+      _location = location;
     });
   }
 
@@ -86,15 +87,15 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _routeNavi() async {
     await AmapNavi.showRoute(
-      naviType: NaviType.walk,
-      start: Poi("", LatLng(30.649863, 104.066851), ""),
+      naviType: NaviType.ride,
+      // start: Poi("", LatLng(30.649863, 104.066851), ""),
       end: Poi("下一站", LatLng(30.659019, 104.057066), ""),
     );
   }
 
   Future<void> _geocode() async {
     var result =
-    await AmapSearch.geocode(GeocodeParams(address: "北京市海淀区北京大学口腔医院"));
+        await AmapSearch.geocode(GeocodeParams(address: "北京市海淀区北京大学口腔医院"));
     print(result);
   }
 
@@ -106,8 +107,8 @@ class _MyAppState extends State<MyApp> {
     // print(result);
     var routes = result[0]["steps"]
         .map((i) => i["polyline"]
-        .map((p) => LatLng(p["latitude"], p["longitude"]))
-        .toList())
+            .map((p) => LatLng(p["latitude"], p["longitude"]))
+            .toList())
         .toList();
     setState(() {
       polylines = {};
@@ -173,7 +174,7 @@ class _MyAppState extends State<MyApp> {
                 onMapCreated: _onMapCreated,
               ),
             ),
-            Text("版本号 $_platformVersion"),
+            Text("当前位置: ${_location?.address}"),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
@@ -189,17 +190,17 @@ class _MyAppState extends State<MyApp> {
                 //     _clear();
                 //   },
                 // ),
+                 RaisedButton(
+                  child: Text("定位"),
+                  onPressed: () async {
+                   Location location = await AmapLocation.fetchLocation();
+                    print(location.toJson());
+                  },
+                ),
                 RaisedButton(
                   child: Text("导航"),
                   onPressed: () {
                     _routeNavi();
-                  },
-                ),
-                RaisedButton(
-                  child: Text("定位"),
-                  onPressed: () async {
-                    Location data = await AmapLocation.fetchLocation();
-                    print(data.toJson());
                   },
                 ),
                 RaisedButton(

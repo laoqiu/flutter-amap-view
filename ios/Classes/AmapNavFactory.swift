@@ -62,6 +62,15 @@ class AmapNavFactory: NSObject, AMapNaviCompositeManagerDelegate {
 //                 }
 //             }
 //            self.compositeManager.presentRoutePlanViewController(withOptions: config)
+            let mview = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
+            let delegate  = UIApplication.shared.delegate as! AppDelegate
+            mview.backgroundColor = UIColor(white: 0.5, alpha: 0.8)
+            //添加tag
+            mview.tag = 1
+            //添加视图
+            delegate.window?.addSubview(mview)
+            //通过tag 从window移除视图
+            delegate.window?.viewWithTag(1)?.removeFromSuperview()
             let amapNaviViewController = AmapNaviViewController()
             let viewController = UIApplication.shared.keyWindow?.rootViewController
             if viewController != nil {
