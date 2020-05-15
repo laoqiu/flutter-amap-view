@@ -41,14 +41,23 @@
     print(data.toJson());
 ```
 
+#### 路径规划
+
+```
+    dynamic data = await AmapSearch.route(
+        start: LatLng(30.649863, 104.066851),
+        end: LatLng(30.659019, 104.057066),
+        routeType: RouteType.ride,
+    );
+    print(data);
+```
+
 #### 使用导航
 
 ```
     await AmapNavi.showRoute(
-        RouteNavi(
-            // driver 汽车导航 默认使用官方组件 ride 骑行 walk 步行 【骑行和步行为自定义SDK 发起直接进入导航】
-            naviType: NaviType.driver, 
-            end: Poi("下一站", LatLng(30.659314, 104.056294), ""),
-        ),
+        // driver 汽车导航 默认使用官方组件 ride 骑行 walk 步行 【骑行和步行为自定义SDK 发起直接进入导航】
+        naviType: NaviType.driver, 
+        end: Poi("下一站", LatLng(30.659314, 104.056294), ""),
     );
 ```

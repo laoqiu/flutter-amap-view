@@ -1,7 +1,8 @@
 part of amap_view;
 
 class AmapSearch {
-  static const MethodChannel _channel = const MethodChannel('plugins.laoqiu.com/amap_view_search');
+  static const MethodChannel _channel =
+      const MethodChannel('plugins.laoqiu.com/amap_view_search');
 
   /// 逆地理编码转换
   static Future<dynamic> reGeocode(ReGeocodeParams params) async {
@@ -16,9 +17,18 @@ class AmapSearch {
   }
 
   /// 行车路径规划
-  static Future<dynamic> route(RouteParams params) async {
-    assert(params != null);
-    return await _channel.invokeMethod('search#route', params.toMap());
+  static Future<dynamic> route({
+    @required LatLng start,
+    @required LatLng end,
+    List<LatLng> wayPoints,
+    RouteType routeType,
+  }) async {
+    return await _channel.invokeMethod('search#route', {
+      "start": start.toMap(),
+      "naviType": routeType.index,
+      "end": end.toMap(),
+      "wayPoints": wayPoints?.map((i) => i.toMap())?.toList(),
+    });
   }
 }
 
@@ -40,7 +50,9 @@ class GeocodeParams {
 }
 
 class ReGeocodeParams {
-  ReGeocodeParams({this.latLntType = LatLntType.amap, @required this.point, this.radius}) : assert(point != null);
+  ReGeocodeParams(
+      {this.latLntType = LatLntType.amap, @required this.point, this.radius})
+      : assert(point != null);
 
   final LatLntType latLntType;
   final LatLng point;
@@ -76,33 +88,4 @@ enum RouteType {
 
   /// 未来行
   plan,
-}
-
-class RouteParams {
-  RouteParams({
-    @required this.start,
-    @required this.end,
-    this.wayPoints,
-    this.routeType,
-  });
-
-  final LatLng start;
-  
-  final LatLng end;
-
-  final RouteType routeType;
-  
-  final List<LatLng> wayPoints;
-
-  Map<String, dynamic> toMap() {
-    return {
-      "start": start.toMap(),
-      "naviType": routeType.index,
-      "end": end.toMap(),
-      "wayPoints": wayPoints?.map((i) => i.toMap())?.toList(),
-    };
-  }
-
-  @override
-  String toString() => '$runtimeType($start, $end, $wayPoints)';
 }
