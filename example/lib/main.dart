@@ -27,10 +27,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     imageConfiguration = createLocalImageConfiguration(context);
     setState(() {
-      markers[centerMarkerId] = Marker(
-          markerId: centerMarkerId,
-          position: center,
-          infoWindow: InfoWindow(title: "中心"));
+      markers[centerMarkerId] = Marker(markerId: centerMarkerId, position: center, infoWindow: InfoWindow(title: "中心"));
     });
 
     initPlatformState();
@@ -39,6 +36,7 @@ class _MyAppState extends State<MyApp> {
   Future<void> initPlatformState() async {
     Location location = await AmapLocation.fetchLocation();
     setState(() {
+      print(location.address);
       _location = location;
     });
   }
@@ -50,20 +48,15 @@ class _MyAppState extends State<MyApp> {
     var markerIcon = await BitmapDescriptor.fromAssetImageWithText(
       imageConfiguration,
       "assets/map-point.png",
-      Label(
-          text: "$_markerIdCounter",
-          size: 48,
-          color: Colors.red,
-          offset: Offset(-1, 10)),
+      Label(text: "$_markerIdCounter", size: 48, color: Colors.red, offset: Offset(-1, 10)),
     );
     print(markerIcon.toMap());
     setState(() {
       markers[markerId] = Marker(
           markerId: markerId,
           icon: markerIcon,
-          position: LatLng(
-              center.latitude + sin(_markerIdCounter * pi / 6.0) / 20.0,
-              center.longitude + sin(_markerIdCounter * pi / 6.0) / 20.0),
+          position:
+              LatLng(center.latitude + sin(_markerIdCounter * pi / 6.0) / 20.0, center.longitude + sin(_markerIdCounter * pi / 6.0) / 20.0),
           infoWindow: InfoWindow(title: 'test', snippet: "hahahkwg"));
     });
   }
@@ -71,10 +64,8 @@ class _MyAppState extends State<MyApp> {
   void _addPolyline() async {
     final PolylineId polylineId = PolylineId('polyline_01');
     setState(() {
-      polylines[polylineId] = Polyline(polylineId: polylineId, points: <LatLng>[
-        LatLng(30.330511, 120.122398),
-        LatLng(30.352437, 120.212005)
-      ]);
+      polylines[polylineId] =
+          Polyline(polylineId: polylineId, points: <LatLng>[LatLng(30.330511, 120.122398), LatLng(30.352437, 120.212005)]);
     });
   }
 
@@ -85,17 +76,8 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  Future<void> _routeNavi() async {
-    await AmapNavi.showRoute(
-      naviType: NaviType.ride,
-      // start: Poi("", LatLng(30.649863, 104.066851), ""),
-      end: Poi("下一站", LatLng(30.659019, 104.057066), ""),
-    );
-  }
-
   Future<void> _geocode() async {
-    var result =
-        await AmapSearch.geocode(GeocodeParams(address: "北京市海淀区北京大学口腔医院"));
+    var result = await AmapSearch.geocode(GeocodeParams(address: "北京市海淀区北京大学口腔医院"));
     print(result);
   }
 
@@ -105,11 +87,7 @@ class _MyAppState extends State<MyApp> {
       end: end,
     );
     // print(result);
-    var routes = result[0]["steps"]
-        .map((i) => i["polyline"]
-            .map((p) => LatLng(p["latitude"], p["longitude"]))
-            .toList())
-        .toList();
+    var routes = result[0]["steps"].map((i) => i["polyline"].map((p) => LatLng(p["latitude"], p["longitude"])).toList()).toList();
     setState(() {
       polylines = {};
       for (var i = 0; i < routes.length; i++) {
@@ -159,8 +137,7 @@ class _MyAppState extends State<MyApp> {
                 onCameraMove: (pos) {
                   print("onCameraMove ${pos.target}");
                   setState(() {
-                    markers[centerMarkerId] = markers[centerMarkerId]
-                        .copyWith(positionParam: pos.target);
+                    markers[centerMarkerId] = markers[centerMarkerId].copyWith(positionParam: pos.target);
                   });
                 },
                 onCameraIdle: (pos) {
@@ -190,17 +167,21 @@ class _MyAppState extends State<MyApp> {
                 //     _clear();
                 //   },
                 // ),
-                 RaisedButton(
+                RaisedButton(
                   child: Text("定位"),
                   onPressed: () async {
-                   Location location = await AmapLocation.fetchLocation();
+                    Location location = await AmapLocation.fetchLocation();
                     print(location.toJson());
                   },
                 ),
                 RaisedButton(
                   child: Text("导航"),
-                  onPressed: () {
-                    _routeNavi();
+                  onPressed: () async {
+                    await AmapNavi.showRoute(
+                      naviType: NaviType.ride,
+                      // start: Poi("", LatLng(30.649863, 104.066851), ""),
+                      end: Poi("下一站", LatLng(30.659019, 104.057066), ""),
+                    );
                   },
                 ),
                 RaisedButton(

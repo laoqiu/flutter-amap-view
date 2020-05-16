@@ -46,13 +46,13 @@ enum MyLocationStyle {
 }
 
 enum NaviType {
-  // 驾车
+  /// 驾车
   driver,
 
-  // 步行
+  /// 步行
   walk,
 
-  // 骑行
+  /// 骑行
   ride,
 }
 

@@ -14,7 +14,7 @@ class AmapNavi {
   }) async {
     assert(wayList == null || wayList.length <= 3);
     await _channel.invokeMethod('navi#showRoute', {
-      "naviType": naviType.index,
+      "naviType": naviType.index ?? 0,
       "start": start?.toMap(),
       "end": end?.toMap(),
       "wayList": wayList?.map((i) => i.toMap()),

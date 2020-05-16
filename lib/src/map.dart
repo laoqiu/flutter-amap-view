@@ -114,10 +114,10 @@ class _AmapViewState extends State<AmapView> {
   }
 
   void _updatePolylines() async {
-    final AMapController controller = await _controller.future;
-    controller._updatePolylines(
-        _PolylineUpdates.from(_polylines.values.toSet(), widget.polylines));
-    _polylines = _keyByPolylineId(widget.polylines);
+    // final AMapController controller = await _controller.future;
+    // controller._updatePolylines(
+    //     _PolylineUpdates.from(_polylines.values.toSet(), widget.polylines));
+    // _polylines = _keyByPolylineId(widget.polylines);
   }
 
   @override

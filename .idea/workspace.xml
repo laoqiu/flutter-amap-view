@@ -2,17 +2,20 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="28b4eb3a-f147-43aa-83fd-3e51061e5b37" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/amap_view.iml" beforeDir="false" afterPath="$PROJECT_DIR$/amap_view.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/example/.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/example/.flutter-plugins-dependencies" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/example/ios/.symlinks/plugins/amap_view/example/.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/amap_view/example/.flutter-plugins-dependencies" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/ios/.symlinks/plugins/amap_view/example/ios/Flutter/flutter_export_environment.sh" beforeDir="false" afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/amap_view/example/ios/Flutter/flutter_export_environment.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/ios/.symlinks/plugins/amap_view/example/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/amap_view/example/lib/main.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/example/ios/.symlinks/plugins/amap_view/ios/Classes/AmapNavFactory.swift" beforeDir="false" afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/amap_view/ios/Classes/AmapNavFactory.swift" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/example/ios/.symlinks/plugins/amap_view/ios/Classes/AmapNaviViewController.swift" beforeDir="false" afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/amap_view/ios/Classes/AmapNaviViewController.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/ios/.symlinks/plugins/amap_view/lib/src/navi.dart" beforeDir="false" afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/amap_view/lib/src/navi.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/ios/.symlinks/plugins/amap_view/lib/src/ui.dart" beforeDir="false" afterPath="$PROJECT_DIR$/example/ios/.symlinks/plugins/amap_view/lib/src/ui.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/example/ios/Flutter/flutter_export_environment.sh" beforeDir="false" afterPath="$PROJECT_DIR$/example/ios/Flutter/flutter_export_environment.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/ios/Runner/Info.plist" beforeDir="false" afterPath="$PROJECT_DIR$/example/ios/Runner/Info.plist" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/example/lib/main.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ios/Classes/AmapNavFactory.swift" beforeDir="false" afterPath="$PROJECT_DIR$/ios/Classes/AmapNavFactory.swift" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ios/Classes/AmapNaviViewController.swift" beforeDir="false" afterPath="$PROJECT_DIR$/ios/Classes/AmapNaviViewController.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/src/navi.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/navi.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/src/ui.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/ui.dart" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

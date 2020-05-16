@@ -11,23 +11,43 @@ protocol DriveNaviViewControllerDelegate: NSObjectProtocol {
     func driveNaviViewCloseButtonClicked()
 }
 
-class AmapNaviViewController: UIViewController, MAMapViewDelegate, AMapNaviRideManagerDelegate, AMapNaviRideViewDelegate {
+class AmapNaviViewController: UIViewController, MAMapViewDelegate, AMapNaviRideManagerDelegate, AMapNaviRideViewDelegate, AMapNaviWalkViewDelegate, AMapNaviWalkManagerDelegate {
     
     var mapView: MAMapView!
+    
     var rideView: AMapNaviRideView!
     var rideManager: AMapNaviRideManager!
     
-    let startPoint = AMapNaviPoint.location(withLatitude: 30.649863, longitude: 104.066851)!
-    let endPoint = AMapNaviPoint.location(withLatitude: 30.659019, longitude: 104.057066)!
+    var walkView: AMapNaviWalkView!
+    var walkManager: AMapNaviWalkManager!
+    
+    var startPoint: AMapNaviPoint!
+    var endPoint: AMapNaviPoint!
+    var naviType: Int = 1
     
     override func viewDidLoad() {
         super.viewDidLoad()
 //        NSLog("初始化地图")
         initMapView()
-        initRideView()
-//        initDriveManager()
-        initRideManager()
-        rideManager.calculateRideRoute(withStart: startPoint, end: endPoint)
+        if (naviType == 1) {
+            // 步行
+            initWalkView()
+            initWalkManager()
+            if (startPoint ==  nil) {
+                walkManager.calculateWalkRoute(withEnd: [endPoint])
+            } else {
+                walkManager.calculateWalkRoute(withStart: [startPoint], end: [endPoint])
+            }
+        } else {
+            // 骑行
+            initRideView()
+            initRideManager()
+            if (startPoint ==  nil) {
+                rideManager.calculateRideRoute(withEnd: endPoint)
+            } else {
+                rideManager.calculateRideRoute(withStart: startPoint, end: endPoint)
+            }
+        }
     }
     
     func initMapView() {
@@ -43,14 +63,22 @@ class AmapNaviViewController: UIViewController, MAMapViewDelegate, AMapNaviRideM
         view.addSubview(rideView)
      }
     
+    func initWalkView() {
+       walkView = AMapNaviWalkView(frame: view.bounds)
+       walkView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+       walkView.delegate = self
+       view.addSubview(walkView)
+    }
+    
+    func initWalkManager() {
+        walkManager = AMapNaviWalkManager.sharedInstance()
+        walkManager.allowsBackgroundLocationUpdates = true
+        walkManager.pausesLocationUpdatesAutomatically = false
+        walkManager.delegate = self
+        walkManager.addDataRepresentative(walkView)
+    }
+    
     func initRideManager() {
-//       AMapNaviRideManager.sharedInstance().delegate = self
-//
-//       AMapNaviRideManager.sharedInstance().allowsBackgroundLocationUpdates = true
-//       AMapNaviRideManager.sharedInstance().pausesLocationUpdatesAutomatically = false
-//
-//       //将driveView添加为导航数据的Representative，使其可以接收到导航诱导数据
-//       AMapNaviRideManager.sharedInstance().addDataRepresentative(rideView)
         rideManager = AMapNaviRideManager.sharedInstance()
         rideManager.allowsBackgroundLocationUpdates = true
         rideManager.pausesLocationUpdatesAutomatically = false
@@ -60,28 +88,51 @@ class AmapNaviViewController: UIViewController, MAMapViewDelegate, AMapNaviRideM
     
     
     func rideManager(onCalculateRouteSuccess rideManager: AMapNaviRideManager) {
-       NSLog("CalculateRouteSuccess")
+        NSLog("CalculateRouteSuccess")
        
-       //算路成功后开始GPS导航
-       AMapNaviRideManager.sharedInstance().startEmulatorNavi()
+        //算路成功后开始GPS导航
+        AMapNaviRideManager.sharedInstance().startGPSNavi()
     }
     
     func rideManager(_ rideManager: AMapNaviRideManager, playNaviSound soundString: String, soundStringType: AMapNaviSoundType) {
         SpeechSynthesizer.Shared.speak(soundString)
     }
-   
-    func rideViewCloseButtonClicked(_ rideView: AMapNaviRideView) {
-       self.dismiss(animated: true, completion: nil)
+    
+    
+    func walkManager(onCalculateRouteSuccess walkManager: AMapNaviWalkManager) {
+        //算路成功后开始GPS导航
+        AMapNaviWalkManager.sharedInstance().startGPSNavi()
     }
     
+    func walkManager(_ walkManager: AMapNaviWalkManager, playNaviSound soundString: String, soundStringType: AMapNaviSoundType) {
+        SpeechSynthesizer.Shared.speak(soundString)
+    }
+   
+    func rideViewCloseButtonClicked(_ rideView: AMapNaviRideView) {
+        NSLog("尝试返回flutter 页面")
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    func walkViewCloseButtonClicked(_ walkView: AMapNaviWalkView) {
+        NSLog("尝试返回flutter 页面")
+        self.navigationController?.popViewController(animated: true)
+    }
     
     deinit {
-        AMapNaviRideManager.sharedInstance().stopNavi()
-        AMapNaviRideManager.sharedInstance().removeDataRepresentative(rideView)
-        AMapNaviRideManager.sharedInstance().delegate = nil
-            
-        let success = AMapNaviRideManager.destroyInstance()
-        NSLog("单例是否销毁成功 : \(success)")
-            
+        SpeechSynthesizer.Shared.stopSpeak()
+        if (naviType == 1) {
+            AMapNaviWalkManager.sharedInstance().stopNavi()
+            AMapNaviWalkManager.sharedInstance().removeDataRepresentative(walkView)
+            AMapNaviWalkManager.sharedInstance().delegate = nil
+            let success = AMapNaviWalkManager.destroyInstance()
+            NSLog("单例是否销毁成功 : \(success)")
+        } else {
+            AMapNaviRideManager.sharedInstance().stopNavi()
+            AMapNaviRideManager.sharedInstance().removeDataRepresentative(rideView)
+            AMapNaviRideManager.sharedInstance().delegate = nil
+                
+            let success = AMapNaviRideManager.destroyInstance()
+            NSLog("单例是否销毁成功 : \(success)")
+        }
     }
 }

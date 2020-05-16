@@ -55,7 +55,7 @@
     print(data);
 ```
 
-#### 使用导航 `骑行、步行目前只支持android`
+#### 使用导航 `IOS中 骑行、步行使用默认样式`
 
 ```
     await AmapNavi.showRoute(
