@@ -12,8 +12,7 @@ import UIKit
 class AmapNavFactory: NSObject, AMapNaviCompositeManagerDelegate {
     private var messenger: FlutterBinaryMessenger
     private var compositeManager: AMapNaviCompositeManager!
-    private var navigationController: UINavigationController!
-    private var window: UIWindow!
+    private var navigationController: UIViewController!
     
     init(withMessenger messenger: FlutterBinaryMessenger) {
         self.messenger = messenger
@@ -24,6 +23,8 @@ class AmapNavFactory: NSObject, AMapNaviCompositeManagerDelegate {
     func register() {
         let channel = FlutterMethodChannel(name: "plugins.laoqiu.com/amap_view_navi", binaryMessenger:messenger)
         channel.setMethodCallHandler(onMethodCall)
+        
+        self.navigationController = UIApplication.shared.delegate?.window?!.rootViewController
     }
 
     func onMethodCall(methodCall: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -67,12 +68,7 @@ class AmapNavFactory: NSObject, AMapNaviCompositeManagerDelegate {
                         }
                         self.compositeManager.presentRoutePlanViewController(withOptions: config)
                     } else {
-                        let flutterViewController = FlutterViewController.init()
-                        navigationController = UINavigationController.init(rootViewController: flutterViewController)
-                        navigationController?.isNavigationBarHidden = true
-                        window = UIWindow(frame: UIScreen.main.bounds)
-                        window.rootViewController = self.navigationController
-                        window.makeKeyAndVisible()
+                        
                         let amapNaviViewController = AmapNaviViewController()
                         if let start = args["start"] as? [String: Any] {
                             if let point = start["target"] as? [String: Double] {
@@ -85,12 +81,11 @@ class AmapNavFactory: NSObject, AMapNaviCompositeManagerDelegate {
                             }
                         }
                         amapNaviViewController.naviType = naviType
-                        navigationController?.pushViewController(amapNaviViewController, animated: true)
+                        amapNaviViewController.modalPresentationStyle = .fullScreen
+                        navigationController?.present(amapNaviViewController, animated: true)
                     }
                 }
              }
-           
-//            delegate.window?.viewWithTag(1)?.removeFromSuperview()
             result(nil)
         default:
             result(FlutterMethodNotImplemented)

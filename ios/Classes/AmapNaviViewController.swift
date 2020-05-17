@@ -88,7 +88,7 @@ class AmapNaviViewController: UIViewController, MAMapViewDelegate, AMapNaviRideM
     
     
     func rideManager(onCalculateRouteSuccess rideManager: AMapNaviRideManager) {
-        NSLog("CalculateRouteSuccess")
+//        NSLog("CalculateRouteSuccess")
        
         //算路成功后开始GPS导航
         AMapNaviRideManager.sharedInstance().startGPSNavi()
@@ -109,13 +109,13 @@ class AmapNaviViewController: UIViewController, MAMapViewDelegate, AMapNaviRideM
     }
    
     func rideViewCloseButtonClicked(_ rideView: AMapNaviRideView) {
-        NSLog("尝试返回flutter 页面")
-        self.navigationController?.popViewController(animated: true)
+//        NSLog("尝试返回flutter 页面")
+        self.dismiss(animated: true, completion: nil)
     }
     
     func walkViewCloseButtonClicked(_ walkView: AMapNaviWalkView) {
-        NSLog("尝试返回flutter 页面")
-        self.navigationController?.popViewController(animated: true)
+//        NSLog("尝试返回flutter 页面")
+        self.dismiss(animated: true, completion: nil)
     }
     
     deinit {
@@ -125,14 +125,14 @@ class AmapNaviViewController: UIViewController, MAMapViewDelegate, AMapNaviRideM
             AMapNaviWalkManager.sharedInstance().removeDataRepresentative(walkView)
             AMapNaviWalkManager.sharedInstance().delegate = nil
             let success = AMapNaviWalkManager.destroyInstance()
-            NSLog("单例是否销毁成功 : \(success)")
+//            NSLog("单例是否销毁成功 : \(success)")
         } else {
             AMapNaviRideManager.sharedInstance().stopNavi()
             AMapNaviRideManager.sharedInstance().removeDataRepresentative(rideView)
             AMapNaviRideManager.sharedInstance().delegate = nil
                 
             let success = AMapNaviRideManager.destroyInstance()
-            NSLog("单例是否销毁成功 : \(success)")
+//            NSLog("单例是否销毁成功 : \(success)")
         }
     }
 }
