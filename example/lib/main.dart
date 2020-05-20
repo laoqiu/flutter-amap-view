@@ -36,7 +36,6 @@ class _MyAppState extends State<MyApp> {
   Future<void> initPlatformState() async {
     Location location = await AmapLocation.fetchLocation();
     setState(() {
-      print(location.address);
       _location = location;
     });
   }
@@ -74,11 +73,6 @@ class _MyAppState extends State<MyApp> {
       markers = {};
       polylines = {};
     });
-  }
-
-  Future<void> _geocode() async {
-    var result = await AmapSearch.geocode(GeocodeParams(address: "北京市海淀区北京大学口腔医院"));
-    print(result);
   }
 
   Future<void> _searchRoute(LatLng start, LatLng end) async {
@@ -161,12 +155,6 @@ class _MyAppState extends State<MyApp> {
                     _addMarker();
                   },
                 ),
-                // RaisedButton(
-                //   child: Text("清除"),
-                //   onPressed: () {
-                //     _clear();
-                //   },
-                // ),
                 RaisedButton(
                   child: Text("定位"),
                   onPressed: () async {
@@ -195,30 +183,76 @@ class _MyAppState extends State<MyApp> {
                     print(data);
                   },
                 ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                RaisedButton(
+                  child: Text("距离测量"),
+                  onPressed: () async {
+                    double distance = await AmapUtils.calculateLineDistance(LatLng(30.649863, 104.066851), LatLng(30.659019, 104.057066));
+                    print(distance);
+                  },
+                ),
+                RaisedButton(
+                  child: Text("面积计算"),
+                  onPressed: () async {
+                    double distance = await AmapUtils.calculateArea(LatLng(30.765133, 103.955872), LatLng(30.608061, 104.138519));
+                    print(distance);
+                  },
+                ),
+                RaisedButton(
+                  child: Text("坐标转换"),
+                  onPressed: () async {
+                    LatLng latLng = await AmapUtils.converter(LatLng(39.93917, 116.379547), CoordType.baidu);
+                    print(latLng);
+                  },
+                ),
+                RaisedButton(
+                  child: Text("地址转坐标"),
+                  onPressed: () async {
+                    List<Geocode> result = await AmapSearch.geocode('北京市海淀区北京大学口腔医院');
+                    result.forEach((e) {
+                       print(e.toJson());
+                    });
+                  },
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                RaisedButton(
+                  child: Text("坐标转地址"),
+                  onPressed: () async {
+                    dynamic res = await AmapSearch.reGeocode(LatLng(30.649863, 104.066851),latLntType: LatLntType.amap, radius: 200);
+                    print(res);
+                  },
+                ),
                 // RaisedButton(
-                //   child: Text("跳转"),
-                //   onPressed: () {
-                //     //  cameraMove(LatLng(30.330511, 120.122398));
+                //   child: Text("面积计算"),
+                //   onPressed: () async {
+                //     double distance = await AmapUtils.calculateArea(LatLng(30.765133, 103.955872), LatLng(30.608061, 104.138519));
+                //     print(distance);
                 //   },
                 // ),
                 // RaisedButton(
-                //   child: Text("搜索"),
-                //   onPressed: () {
-                //     //  inputTips("医院", "杭州");
+                //   child: Text("坐标转换"),
+                //   onPressed: () async {
+                //     LatLng latLng = await AmapUtils.converter(LatLng(39.93917, 116.379547), CoordType.baidu);
+                //     print(latLng);
                 //   },
                 // ),
-//                RaisedButton(
-//                  child: Text("行车路径规则1"),
-//                  onPressed: () {
-//                    _searchRoute(LatLng(30.330511, 120.122398), LatLng(30.352437, 120.212005));
-//                  },
-//                ),
-//                RaisedButton(
-//                  child: Text("行车路径规则2"),
-//                  onPressed: () {
-//                    _searchRoute(LatLng(30.328881, 120.12993), LatLng(30.340067, 120.121518));
-//                  },
-//                ),
+                // RaisedButton(
+                //   child: Text("地址转坐标"),
+                //   onPressed: () async {
+                //     List<Geocode> result = await AmapSearch.geocode('北京市海淀区北京大学口腔医院');
+                //     result.forEach((e) {
+                //        print(e.toJson());
+                //     });
+                //   },
+                // ),
               ],
             ),
           ],
