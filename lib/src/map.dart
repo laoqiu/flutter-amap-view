@@ -83,6 +83,7 @@ class AmapView extends StatefulWidget {
 
   /// 下面两条暂不知用处
   final TextDirection layoutDirection;
+
   final PlatformViewHitTestBehavior hitTestBehavior;
 
   @override
@@ -93,8 +94,11 @@ class AmapView extends StatefulWidget {
 
 class _AmapViewState extends State<AmapView> {
   final Completer<AMapController> _controller = Completer<AMapController>();
+
   Map<MarkerId, Marker> _markers = <MarkerId, Marker>{};
+
   Map<PolylineId, Polyline> _polylines = <PolylineId, Polyline>{};
+
   _AMapOptions _mapOptions;
 
   void _updateOptions() async {
@@ -108,8 +112,7 @@ class _AmapViewState extends State<AmapView> {
 
   void _updateMarkers() async {
     final AMapController controller = await _controller.future;
-    controller._updateMarkers(
-        _MarkerUpdates.from(_markers.values.toSet(), widget.markers));
+    controller._updateMarkers(_MarkerUpdates.from(_markers.values.toSet(), widget.markers));
     _markers = _keyByMarkerId(widget.markers);
   }
 
@@ -282,9 +285,6 @@ class _AMapOptions {
   Map<String, dynamic> updatesMap(_AMapOptions newOptions) {
     final Map<String, dynamic> prevOptionsMap = toMap();
 
-    return newOptions.toMap()
-      ..removeWhere(
-          (String key, dynamic value) => prevOptionsMap[key] == value);
+    return newOptions.toMap()..removeWhere((String key, dynamic value) => prevOptionsMap[key] == value);
   }
-
 }

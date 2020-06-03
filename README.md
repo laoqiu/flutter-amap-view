@@ -66,6 +66,34 @@
     print(location.toJson());
 ```
 
+#### AmapView
+
+```
+    AmapView(
+        initialCameraPosition: CameraPosition(target: center, zoom: 13),
+        myLocationEnabled: true,
+        scaleControlsEnabled: false,
+        markers: Set<Marker>.of(markers.values),
+        polylines: Set<Polyline>.of(polylines.values),
+        setMyLocationButtonEnabled: true,
+        onCameraMove: (pos) {
+            print("onCameraMove ${pos.target}");
+            setState(() {
+                markers[centerMarkerId] = markers[centerMarkerId].copyWith(positionParam: pos.target);
+        });
+        },
+        onCameraIdle: (pos) {
+            print("onCameraIdle =====> $pos");
+        },
+        onTap: (pos) {
+            print("onTap====> $pos");
+        },
+        onMapCreated: (AMapController controller) {
+            mapController = controller;
+        },
+    )
+```
+
 #### AmapNavi `IOS中 骑行、步行使用默认样式`
 
 ```

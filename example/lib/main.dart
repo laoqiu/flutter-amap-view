@@ -12,11 +12,13 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  Location _location = null;
+  Location _location;
 
   AMapController mapController;
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
-  Map<PolylineId, Polyline> polylines = <PolylineId, Polyline>{};
+  Map<PolylineId, Polyline> polylines = <PolylineId, Polyline>{
+
+  };
   int _markerIdCounter = 1;
   ImageConfiguration imageConfiguration;
   LatLng center = LatLng(30.337875, 120.111339);
@@ -64,7 +66,7 @@ class _MyAppState extends State<MyApp> {
     final PolylineId polylineId = PolylineId('polyline_01');
     setState(() {
       polylines[polylineId] =
-          Polyline(polylineId: polylineId, points: <LatLng>[LatLng(30.330511, 120.122398), LatLng(30.352437, 120.212005)]);
+          Polyline(polylineId: polylineId, points: <LatLng>[LatLng(30.69674, 104.074232), LatLng(30.666328, 104.065821)]);
     });
   }
 
@@ -120,10 +122,10 @@ class _MyAppState extends State<MyApp> {
           children: <Widget>[
             SizedBox(
               width: double.infinity,
-              height: 200,
+              height: 500,
               child: AmapView(
-                initialCameraPosition: CameraPosition(target: center, zoom: 13),
-                //myLocationEnabled: true,
+                initialCameraPosition: CameraPosition(target: LatLng(30.688695, 104.077751), zoom: 13),
+                // myLocationEnabled: true,
                 scaleControlsEnabled: false,
                 markers: Set<Marker>.of(markers.values),
                 polylines: Set<Polyline>.of(polylines.values),
@@ -230,13 +232,10 @@ class _MyAppState extends State<MyApp> {
                     print(res);
                   },
                 ),
-                // RaisedButton(
-                //   child: Text("面积计算"),
-                //   onPressed: () async {
-                //     double distance = await AmapUtils.calculateArea(LatLng(30.765133, 103.955872), LatLng(30.608061, 104.138519));
-                //     print(distance);
-                //   },
-                // ),
+                RaisedButton(
+                  child: Text("添加折线"),
+                  onPressed: _addPolyline,
+                ),
                 // RaisedButton(
                 //   child: Text("坐标转换"),
                 //   onPressed: () async {
