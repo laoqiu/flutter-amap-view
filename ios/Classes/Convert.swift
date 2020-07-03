@@ -5,7 +5,7 @@
 //  Created by QiuLiang Wang on 2019/4/23.
 //
 
-import MAMapKit
+import AMapNaviKit
 
 let jsonEncoder = JSONEncoder()
 let jsonDecoder = JSONDecoder()

@@ -12,11 +12,13 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+  Location _location;
 
   AMapController mapController;
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
-  Map<PolylineId, Polyline> polylines = <PolylineId, Polyline>{};
+  Map<PolylineId, Polyline> polylines = <PolylineId, Polyline>{
+
+  };
   int _markerIdCounter = 1;
   ImageConfiguration imageConfiguration;
   LatLng center = LatLng(30.337875, 120.111339);
@@ -27,16 +29,16 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     imageConfiguration = createLocalImageConfiguration(context);
     setState(() {
-      markers[centerMarkerId] =
-          Marker(markerId: centerMarkerId, position: center, infoWindow: InfoWindow(title: "中心"));
+      markers[centerMarkerId] = Marker(markerId: centerMarkerId, position: center, infoWindow: InfoWindow(title: "中心"));
     });
+
     initPlatformState();
   }
 
   Future<void> initPlatformState() async {
-    await AmapLocation.start(once: true); // 单次定位
-    AmapLocation.listen((event) {
-      print("AmapLocation.listen -> $event");
+    Location location = await AmapLocation.fetchLocation();
+    setState(() {
+      _location = location;
     });
   }
 
@@ -52,26 +54,19 @@ class _MyAppState extends State<MyApp> {
     print(markerIcon.toMap());
     setState(() {
       markers[markerId] = Marker(
-        markerId: markerId,
-        icon: markerIcon,
-        position: LatLng(
-            center.latitude + sin(_markerIdCounter * pi / 6.0) / 20.0,
-            center.longitude + sin(_markerIdCounter * pi / 6.0) / 20.0),
-        infoWindow: InfoWindow(title: 'test', snippet: "hahahkwg")
-      );
+          markerId: markerId,
+          icon: markerIcon,
+          position:
+              LatLng(center.latitude + sin(_markerIdCounter * pi / 6.0) / 20.0, center.longitude + sin(_markerIdCounter * pi / 6.0) / 20.0),
+          infoWindow: InfoWindow(title: 'test', snippet: "hahahkwg"));
     });
   }
 
   void _addPolyline() async {
     final PolylineId polylineId = PolylineId('polyline_01');
     setState(() {
-      polylines[polylineId] = Polyline(
-          polylineId: polylineId,
-          points: <LatLng>[
-            LatLng(30.330511, 120.122398),
-            LatLng(30.352437, 120.212005)
-          ]
-      );
+      polylines[polylineId] =
+          Polyline(polylineId: polylineId, points: <LatLng>[LatLng(30.69674, 104.074232), LatLng(30.666328, 104.065821)]);
     });
   }
 
@@ -82,27 +77,16 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  Future<void> _routeNavi() async {
-    await AmapNavi.showRoute(
-        RouteNavi(end: Poi("下一站", LatLng(30.426789, 120.264577), "")));
-  }
-
-  Future<void> _geocode() async {
-    var result = await AmapSearch.geocode(GeocodeParams(address: "北京市海淀区北京大学口腔医院"));
-    print(result);
-  }
-  
   Future<void> _searchRoute(LatLng start, LatLng end) async {
-    var result = await AmapSearch.route(RouteParams(
-        start: start,
-        end: end,
-        // wayPoints:
-    ));
+    var result = await AmapSearch.route(
+      start: start,
+      end: end,
+    );
     // print(result);
-    var routes = result[0]["steps"].map((i)=> i["polyline"].map((p)=> LatLng(p["latitude"], p["longitude"]) ).toList()).toList();
+    var routes = result[0]["steps"].map((i) => i["polyline"].map((p) => LatLng(p["latitude"], p["longitude"])).toList()).toList();
     setState(() {
       polylines = {};
-      for (var i=0; i<routes.length; i++) {
+      for (var i = 0; i < routes.length; i++) {
         var polylineId = PolylineId('polyline_$i');
         polylines[polylineId] = Polyline(
           polylineId: polylineId,
@@ -111,18 +95,17 @@ class _MyAppState extends State<MyApp> {
         );
       }
     });
-
   }
 
-//  Future<void> cameraMove(LatLng loc) async {
-//    await mapController.animateCamera(CameraUpdate.newLatLng(loc));
-//  }
-//
-//  Future<dynamic> inputTips(String keyword, String city) async {
-//    var result = await AmapSearch.inputTips(keyword, city);
-//    print("inputTips-> $result");
-//    return result;
-//  }
+  // Future<void> cameraMove(LatLng loc) async {
+  //   await mapController.animateCamera(CameraUpdate.newLatLng(loc));
+  // }
+
+  // Future<dynamic> inputTips(String keyword, String city) async {
+  //   var result = await AmapSearch.inputTips(keyword, city);
+  //   print("inputTips-> $result");
+  //   return result;
+  // }
 
   void _onMapCreated(AMapController controller) {
     mapController = controller;
@@ -139,10 +122,10 @@ class _MyAppState extends State<MyApp> {
           children: <Widget>[
             SizedBox(
               width: double.infinity,
-              height: 200,
+              height: 500,
               child: AmapView(
-                initialCameraPosition: CameraPosition(target: center, zoom: 13),
-                //myLocationEnabled: true,
+                initialCameraPosition: CameraPosition(target: LatLng(30.688695, 104.077751), zoom: 13),
+                // myLocationEnabled: true,
                 scaleControlsEnabled: false,
                 markers: Set<Marker>.of(markers.values),
                 polylines: Set<Polyline>.of(polylines.values),
@@ -150,8 +133,7 @@ class _MyAppState extends State<MyApp> {
                 onCameraMove: (pos) {
                   print("onCameraMove ${pos.target}");
                   setState(() {
-                    markers[centerMarkerId] = markers[centerMarkerId]
-                        .copyWith(positionParam: pos.target);
+                    markers[centerMarkerId] = markers[centerMarkerId].copyWith(positionParam: pos.target);
                   });
                 },
                 onCameraIdle: (pos) {
@@ -165,52 +147,111 @@ class _MyAppState extends State<MyApp> {
                 onMapCreated: _onMapCreated,
               ),
             ),
-            Text("版本号 $_platformVersion"),
+            Text("当前位置: ${_location?.address}"),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
+                RaisedButton(
+                  child: Text("添加"),
+                  onPressed: () {
+                    _addMarker();
+                  },
+                ),
+                RaisedButton(
+                  child: Text("定位"),
+                  onPressed: () async {
+                    Location location = await AmapLocation.fetchLocation();
+                    print(location.toJson());
+                  },
+                ),
+                RaisedButton(
+                  child: Text("导航"),
+                  onPressed: () async {
+                    await AmapNavi.showRoute(
+                      naviType: NaviType.ride,
+                      // start: Poi("", LatLng(30.649863, 104.066851), ""),
+                      end: Poi("下一站", LatLng(30.659019, 104.057066), ""),
+                    );
+                  },
+                ),
+                RaisedButton(
+                  child: Text("路径规划"),
+                  onPressed: () async {
+                    dynamic data = await AmapSearch.route(
+                      start: LatLng(30.649863, 104.066851),
+                      end: LatLng(30.659019, 104.057066),
+                      routeType: RouteType.ride,
+                    );
+                    print(data);
+                  },
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                RaisedButton(
+                  child: Text("距离测量"),
+                  onPressed: () async {
+                    double distance = await AmapUtils.calculateLineDistance(LatLng(30.649863, 104.066851), LatLng(30.659019, 104.057066));
+                    print(distance);
+                  },
+                ),
+                RaisedButton(
+                  child: Text("面积计算"),
+                  onPressed: () async {
+                    double distance = await AmapUtils.calculateArea(LatLng(30.765133, 103.955872), LatLng(30.608061, 104.138519));
+                    print(distance);
+                  },
+                ),
+                RaisedButton(
+                  child: Text("坐标转换"),
+                  onPressed: () async {
+                    LatLng latLng = await AmapUtils.converter(LatLng(39.93917, 116.379547), CoordType.baidu);
+                    print(latLng);
+                  },
+                ),
+                RaisedButton(
+                  child: Text("地址转坐标"),
+                  onPressed: () async {
+                    List<Geocode> result = await AmapSearch.geocode('北京市海淀区北京大学口腔医院');
+                    result.forEach((e) {
+                       print(e.toJson());
+                    });
+                  },
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                RaisedButton(
+                  child: Text("坐标转地址"),
+                  onPressed: () async {
+                    dynamic res = await AmapSearch.reGeocode(LatLng(30.649863, 104.066851),latLntType: LatLntType.amap, radius: 200);
+                    print(res);
+                  },
+                ),
+                RaisedButton(
+                  child: Text("添加折线"),
+                  onPressed: _addPolyline,
+                ),
                 // RaisedButton(
-                //   child: Text("添加"),
-                //   onPressed: () {
-                //     _addMarker();
+                //   child: Text("坐标转换"),
+                //   onPressed: () async {
+                //     LatLng latLng = await AmapUtils.converter(LatLng(39.93917, 116.379547), CoordType.baidu);
+                //     print(latLng);
                 //   },
                 // ),
                 // RaisedButton(
-                //   child: Text("清除"),
-                //   onPressed: () {
-                //     _clear();
+                //   child: Text("地址转坐标"),
+                //   onPressed: () async {
+                //     List<Geocode> result = await AmapSearch.geocode('北京市海淀区北京大学口腔医院');
+                //     result.forEach((e) {
+                //        print(e.toJson());
+                //     });
                 //   },
                 // ),
-              //  RaisedButton(
-              //    child: Text("导航"),
-              //    onPressed: () {
-              //      _routeNavi();
-              //    },
-//              //  ),
-//               RaisedButton(
-//                 child: Text("跳转"),
-//                 onPressed: () {
-//                   cameraMove(LatLng(30.330511, 120.122398));
-//                 },
-//               ),
-//               RaisedButton(
-//                 child: Text("搜索"),
-//                 onPressed: () {
-//                   inputTips("医院", "杭州");
-//                 },
-//               ),
-//                RaisedButton(
-//                  child: Text("行车路径规则1"),
-//                  onPressed: () {
-//                    _searchRoute(LatLng(30.330511, 120.122398), LatLng(30.352437, 120.212005));
-//                  },
-//                ),
-//                RaisedButton(
-//                  child: Text("行车路径规则2"),
-//                  onPressed: () {
-//                    _searchRoute(LatLng(30.328881, 120.12993), LatLng(30.340067, 120.121518));
-//                  },
-//                ),
               ],
             ),
           ],

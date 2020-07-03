@@ -13,15 +13,22 @@ import AMapLocationKit
 class AmapLocationFactory: NSObject, AMapLocationManagerDelegate, FlutterStreamHandler {
     private var messenger: FlutterBinaryMessenger
     private var locationManager: AMapLocationManager
+    private var fetchLocationManager: AMapLocationManager
     private var eventSink: FlutterEventSink?
+    private var fetchResult: FlutterResult?
     
     init(withMessenger messenger: FlutterBinaryMessenger) {
         self.messenger = messenger
         locationManager = AMapLocationManager()
+        fetchLocationManager = AMapLocationManager()
         super.init()
         
         locationManager.distanceFilter = 200
         locationManager.delegate = self
+        locationManager.allowsBackgroundLocationUpdates = true
+        
+        fetchLocationManager.distanceFilter = 200
+        fetchLocationManager.delegate = self
     }
     
     func register() {
@@ -34,6 +41,10 @@ class AmapLocationFactory: NSObject, AMapLocationManagerDelegate, FlutterStreamH
 
     func onMethodCall(methodCall: FlutterMethodCall, result: @escaping FlutterResult) {
         switch methodCall.method {
+        case "location#fetchLocation":
+            fetchLocationManager.locatingWithReGeocode = true
+            fetchResult = result
+            fetchLocationManager.startUpdatingLocation()
         case "location#convert":
             if let args = methodCall.arguments as? [String: Any] {
                 let coordType = getCoordType(t: args["coordType"] as? Int)
@@ -66,11 +77,17 @@ class AmapLocationFactory: NSObject, AMapLocationManagerDelegate, FlutterStreamH
     }
     
     func amapLocationManager(_ manager: AMapLocationManager!, didUpdate location: CLLocation!, reGeocode: AMapLocationReGeocode!) {
-        if location != nil {
-            var dataMap: Dictionary<String, Any> = ["speed": location.speed ,"altitude": location.altitude, "latitude": location.coordinate.latitude, "longitude": location.coordinate.longitude]
+        if (location != nil) {
+            var dataMap: Dictionary<String, Any> = ["speed": location.speed ,"altitude": location.altitude, "latitude": location.coordinate.latitude, "longitude": location.coordinate.longitude, "accuracy": location.horizontalAccuracy]
             if (reGeocode != nil) {
                 dataMap["address"] = reGeocode.formattedAddress
+                dataMap["country"] = reGeocode.country
+                dataMap["city"] = reGeocode.city
+                dataMap["street"] = reGeocode.street
+                dataMap["district"] = reGeocode.district
             }
+            fetchResult?(dataMap)
+            fetchResult = nil
             eventSink?(dataMap)
         }
     }

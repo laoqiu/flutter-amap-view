@@ -22,6 +22,20 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>允许访问用户位置</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>允许访问用户位置</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -41,23 +55,14 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<true/>
-	</dict>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>fetch</string>
-		<string>remote-notification</string>
-	</array>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>允许访问用户位置</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>允许访问用户位置</string>
+	<key>amap_key</key>
+	<string>39a49aebcca9284aaca2e639e651ba45</string>
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>
-	<key>amap_key</key>
-	<string>891b31d10a27751bbd0c046e1213e0f6</string>
+	<key>UIBackgroundModes</key> 
+	<array> 
+		<string>location</string>
+		<string>audio</string> 
+	</array>
 </dict>
 </plist>

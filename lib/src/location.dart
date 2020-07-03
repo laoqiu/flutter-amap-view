@@ -1,11 +1,18 @@
 part of amap_view;
 
 class AmapLocation {
-  static const _channel = MethodChannel('plugins.laoqiu.com/amap_view_location');
-  static const _event = EventChannel('plugins.laoqiu.com/amap_view_location_event');
+  static const _channel =
+      MethodChannel('plugins.laoqiu.com/amap_view_location');
+  static const _event =
+      EventChannel('plugins.laoqiu.com/amap_view_location_event');
 
-  static Future<void> start({int interval, bool once}) async {
-    await _channel.invokeMethod('location#start', {"interval": interval, "once": once});
+  static Future<void> start({int interval}) async {
+    await _channel.invokeMethod('location#start', {"interval": interval});
+  }
+
+  static Future<Location> fetchLocation() async {
+    dynamic location = await _channel.invokeMethod('location#fetchLocation');
+    return Location.fromJson(location);
   }
 
   static Future<void> stop() async {
@@ -15,7 +22,6 @@ class AmapLocation {
   static Future<dynamic> convert(ConvertParms params) async {
     return await _channel.invokeMethod('location#convert', params.toMap());
   }
-
 
   static void listen(Function callback) {
     _event.receiveBroadcastStream().listen(callback);
@@ -77,16 +83,19 @@ class LatLngBounds {
 
   @override
   bool operator ==(Object o) {
-    return o is LatLngBounds && o.northeast == northeast && o.southwest == southwest;
+    return o is LatLngBounds &&
+        o.northeast == northeast &&
+        o.southwest == southwest;
   }
 
   @override
   int get hashCode => hashValues(northeast, southwest);
 }
 
-
 class Poi {
-  Poi(this.name, this.target, this.s1) : assert(name != null), assert(target != null);
+  Poi(this.name, this.target, this.s1)
+      : assert(name != null),
+        assert(target != null);
 
   final String name;
   final LatLng target;
@@ -106,7 +115,6 @@ class Poi {
 
     return _data;
   }
-
 }
 
 class ConvertParms {
@@ -131,3 +139,61 @@ class ConvertParms {
     return _data;
   }
 }
+
+class Location {
+  final double latitude;
+
+  final double longitude;
+
+  final String address;
+
+  final String country;
+
+  final String city;
+
+  final String street;
+
+  final String district;
+
+  final double accuracy;
+
+  Location({
+    this.latitude,
+    this.longitude,
+    this.accuracy,
+    this.address,
+    this.city,
+    this.country,
+    this.district,
+    this.street,
+  });
+
+  factory Location.fromJson(Map<dynamic, dynamic> json) =>
+      _$LocationFromJson(json);
+
+  Map<String, dynamic> toJson() => _$LocationToJson(this);
+}
+
+Location _$LocationFromJson(Map<dynamic, dynamic> json) {
+  return Location(
+    latitude: (json['latitude'] as num)?.toDouble(),
+    longitude: (json['longitude'] as num)?.toDouble(),
+    accuracy: json['accuracy'] as num,
+    address: json['address'] as String,
+    city: json['city'] as String,
+    country: json['country'] as String,
+    district: json['district'] as String,
+    street: json['street'] as String,
+  );
+}
+
+Map<String, dynamic> _$LocationToJson(Location instance) => <String, dynamic>{
+      'latitude': instance.latitude,
+      'longitude': instance.longitude,
+      'address': instance.address,
+      'country': instance.country,
+      'city': instance.city,
+      'street': instance.street,
+      'district': instance.district,
+      'accuracy': instance.accuracy,
+    };

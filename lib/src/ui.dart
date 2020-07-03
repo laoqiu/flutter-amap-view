@@ -46,19 +46,52 @@ enum MyLocationStyle {
 }
 
 enum NaviType {
-  // 驾车
+  /// 驾车
   driver,
 
-  // 步行
+  /// 步行
   walk,
 
-  // 骑行
+  /// 骑行
   ride,
+}
+
+enum DistanceType {
+  /// 驾车
+  driver,
+
+  /// 直线
+  line,
+  
 }
 
 enum LatLntType {
   amap,
   gps,
+}
+
+/// 坐标系
+enum CoordType {
+  /// 百度
+  baidu,
+
+  /// 阿里云
+  aliyun,
+
+  /// 谷歌
+  google,
+
+  /// GPS
+  gps,
+
+  /// MAPABC
+  mapabc,
+
+  /// MAPBAR
+  mapbar,
+
+  /// SOSO地图
+  sosomap,
 }
 
 class Avatar {

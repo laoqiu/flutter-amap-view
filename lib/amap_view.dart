@@ -2,6 +2,7 @@ library amap_view;
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
@@ -20,3 +21,4 @@ part 'src/bitmap.dart';
 part 'src/camera.dart';
 part 'src/navi.dart';
 part 'src/search.dart';
+part 'src/utils.dart';

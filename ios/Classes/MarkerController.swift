@@ -5,7 +5,7 @@
 //  Created by QiuLiang Wang on 2019/5/5.
 //
 
-import MAMapKit
+import AMapNaviKit
 
 
 class MarkerController: NSObject {
